@@ -12,7 +12,7 @@ LLMs understand logic well but struggle with spatial math and strict file format
 
 ## Status
 
-Under active development. Working today: the Excalidraw codec (byte-exact round-trips through the plugin's `json` / `compressed-json` envelope) and read-side tools — `vault_status`, `scheme_list`, `scheme_read`.
+Under active development. Working today: the Excalidraw codec (byte-exact round-trips through the plugin's `json` / `compressed-json` envelope), read-side tools — `vault_status`, `scheme_list`, `scheme_read` — and `scheme_create`, which draws a new scheme from a logical node/edge description with automatic layout.
 
 ## Configuration
 

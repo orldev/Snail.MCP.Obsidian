@@ -23,4 +23,16 @@ public sealed class SchemeTools(SchemeCatalog catalog, VaultConfig config)
     public SchemeGraph Read(
         [Description("Vault-relative path of the scheme file, e.g. 'Excalidraw/RAG.md'.")] string path) =>
         catalog.Read(path);
+
+    [McpServerTool(Name = "scheme_create")]
+    [Description("Draws a new Excalidraw scheme from a logical description; the server computes the layout, ids and bindings itself. Never overwrites an existing file.")]
+    public object Create(
+        [Description("Vault-relative path for the new file, e.g. 'Excalidraw/Payments.md'.")] string path,
+        [Description("Nodes to draw; 'key' names the node for edges, 'text' is the caption, optional 'shape' is rectangle (default), diamond or ellipse.")] IReadOnlyList<NodeSpec> nodes,
+        [Description("Directed connections between node keys, each with an optional label.")] IReadOnlyList<EdgeSpec>? edges = null)
+    {
+        var createdPath = catalog.Create(path, new SchemeSpec { Nodes = nodes, Edges = edges ?? [] });
+
+        return new { path = createdPath, nodeCount = nodes.Count, edgeCount = edges?.Count ?? 0 };
+    }
 }

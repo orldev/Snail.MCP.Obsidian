@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Snail.MCP.Vault.Adapters.FileSystem;
+using Snail.MCP.Vault.Application.Excalidraw;
 using Snail.MCP.Vault.Application.Ports;
 using Snail.MCP.Vault.Application.Schemes;
 using Snail.MCP.Vault.Configuration;
@@ -12,5 +13,6 @@ public static class VaultServiceCollectionExtensions
         services
             .AddSingleton(VaultConfig.Load())
             .AddSingleton<IVaultStore, FileSystemVaultStore>()
+            .AddSingleton<SceneComposer>()
             .AddSingleton<SchemeCatalog>();
 }

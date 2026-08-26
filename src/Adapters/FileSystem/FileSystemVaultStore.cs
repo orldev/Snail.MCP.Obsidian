@@ -20,6 +20,15 @@ public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
 
     public string Read(string relativePath) => File.ReadAllText(Resolve(relativePath));
 
+    public bool Exists(string relativePath) => File.Exists(Resolve(relativePath));
+
+    public void Write(string relativePath, string content)
+    {
+        var fullPath = Resolve(relativePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+        File.WriteAllText(fullPath, content);
+    }
+
     private static bool IsInsideServiceFolder(string relativePath) =>
         relativePath.Split(Path.DirectorySeparatorChar).Any(segment => segment.StartsWith('.'));
 

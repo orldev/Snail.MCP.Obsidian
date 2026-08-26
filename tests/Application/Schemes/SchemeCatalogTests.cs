@@ -11,11 +11,11 @@ public class SchemeCatalogTests
     [Fact]
     public void ListReturnsOnlyExcalidrawFiles()
     {
-        var catalog = new SchemeCatalog(new FakeVaultStore(new()
+        var catalog = Catalog(new()
         {
             ["Excalidraw/Scheme.md"] = SchemeFile(),
             ["Notes/Plain.md"] = "# Just a note\n",
-        }));
+        });
 
         Assert.Equal(["Excalidraw/Scheme.md"], catalog.List());
     }
@@ -23,20 +23,27 @@ public class SchemeCatalogTests
     [Fact]
     public void ReadProjectsSchemeIntoGraph()
     {
-        var catalog = new SchemeCatalog(new FakeVaultStore(new() { ["Scheme.md"] = SchemeFile() }));
+        var catalog = Catalog(new() { ["Scheme.md"] = SchemeFile() });
 
         var graph = catalog.Read("Scheme.md");
 
         Assert.Single(graph.Nodes);
     }
 
+    internal static SchemeCatalog Catalog(Dictionary<string, string> files) =>
+        new(new FakeVaultStore(files), new SceneComposer(new Random(42)));
+
     private static string SchemeFile() =>
         $"---\n\nexcalidraw-plugin: parsed\n\n---\n\n# Excalidraw Data\n\n## Text Elements\n\n%%\n## Drawing\n```compressed-json\n{LzString.CompressToBase64(SceneJson)}\n```\n%%";
 
-    private sealed class FakeVaultStore(Dictionary<string, string> files) : IVaultStore
+    internal sealed class FakeVaultStore(Dictionary<string, string> files) : IVaultStore
     {
         public IEnumerable<string> MarkdownFiles() => files.Keys;
 
         public string Read(string relativePath) => files[relativePath];
+
+        public bool Exists(string relativePath) => files.ContainsKey(relativePath);
+
+        public void Write(string relativePath, string content) => files[relativePath] = content;
     }
 }

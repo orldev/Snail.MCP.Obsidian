@@ -1,3 +1,6 @@
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using Snail.MCP.Vault.Application.Excalidraw;
 using Snail.MCP.Vault.Application.Ports;
@@ -5,10 +8,18 @@ using Snail.MCP.Vault.Domain;
 
 namespace Snail.MCP.Vault.Application.Schemes;
 
-/// <summary>Finds Excalidraw schemes in the vault and serves their logical graphs.</summary>
-public sealed class SchemeCatalog(IVaultStore vault)
+/// <summary>Finds Excalidraw schemes in the vault, serves their logical graphs, and draws new ones.</summary>
+public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer)
 {
     private const string PluginMarker = "excalidraw-plugin:";
+
+    private static readonly JsonSerializerOptions SceneSerialization = new()
+    {
+        WriteIndented = true,
+        IndentCharacter = '\t',
+        IndentSize = 1,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+    };
 
     public IReadOnlyList<string> List() =>
         [.. vault.MarkdownFiles().Where(path => Head(vault.Read(path)).Contains(PluginMarker))];
@@ -20,6 +31,48 @@ public sealed class SchemeCatalog(IVaultStore vault)
             ?? throw new FormatException("The drawing payload is empty.");
 
         return GraphProjection.Project(scene);
+    }
+
+    public string Create(string relativePath, SchemeSpec spec)
+    {
+        var path = relativePath.EndsWith(".md") ? relativePath : $"{relativePath}.md";
+        if (vault.Exists(path))
+            throw new InvalidOperationException($"'{path}' already exists; creating a scheme never overwrites files.");
+
+        var composed = composer.Compose(spec);
+
+        vault.Write(path, ComposeMarkdown(composed));
+        return path;
+    }
+
+    private static string ComposeMarkdown(ComposedScene composed)
+    {
+        var empty = new ExcalidrawDocument
+        {
+            Prefix = $"{Envelope(composed.Captions)}```compressed-json\n",
+            Drawing = "",
+            Suffix = "```\n%%",
+            Format = DrawingFormat.CompressedJson,
+        };
+
+        var document = ExcalidrawCodec.WithDrawing(empty, composed.Scene.ToJsonString(SceneSerialization));
+        return ExcalidrawCodec.Serialize(document);
+    }
+
+    private static string Envelope(IReadOnlyList<SchemeCaption> captions)
+    {
+        var text = new StringBuilder(
+            "---\n\nexcalidraw-plugin: parsed\ntags: [excalidraw]\n\n---\n" +
+            "==⚠  Switch to EXCALIDRAW VIEW in the MORE OPTIONS menu of this document. ⚠== " +
+            "You can decompress Drawing data with the command palette: 'Decompress current Excalidraw file'. " +
+            "For more info check in plugin settings under 'Saving'\n\n\n" +
+            "# Excalidraw Data\n\n## Text Elements\n");
+
+        foreach (var caption in captions)
+            text.Append($"{caption.Text} ^{caption.Id}\n\n");
+
+        text.Append("%%\n## Drawing\n");
+        return text.ToString();
     }
 
     private static string Head(string content) =>
