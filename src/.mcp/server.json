@@ -12,7 +12,14 @@
         "type": "stdio"
       },
       "packageArguments": [],
-      "environmentVariables": []
+      "environmentVariables": [
+        {
+          "name": "SNAIL_MCP_VAULT_PATH",
+          "description": "Absolute path to the Obsidian vault root.",
+          "isRequired": true,
+          "format": "filepath"
+        }
+      ]
     }
   ],
   "repository": {

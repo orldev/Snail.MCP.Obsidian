@@ -12,7 +12,13 @@ LLMs understand logic well but struggle with spatial math and strict file format
 
 ## Status
 
-Under active development. Current focus: the Excalidraw codec — parsing and serializing the plugin's Markdown envelope with `json` / `compressed-json` (LZ-String) drawing blocks, guaranteeing byte-exact round-trips.
+Under active development. Working today: the Excalidraw codec (byte-exact round-trips through the plugin's `json` / `compressed-json` envelope) and read-side tools — `vault_status`, `scheme_list`, `scheme_read`.
+
+## Configuration
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `SNAIL_MCP_VAULT_PATH` | yes | Absolute path to the Obsidian vault root. |
 
 ## Developing locally
 
@@ -22,7 +28,10 @@ Under active development. Current focus: the Excalidraw codec — parsing and se
     "snail-mcp-vault": {
       "type": "stdio",
       "command": "dotnet",
-      "args": ["run", "--project", "<PATH TO src DIRECTORY>"]
+      "args": ["run", "--project", "<PATH TO src DIRECTORY>"],
+      "env": {
+        "SNAIL_MCP_VAULT_PATH": "/absolute/path/to/Obsidian Vault"
+      }
     }
   }
 }
