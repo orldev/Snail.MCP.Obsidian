@@ -12,7 +12,23 @@ LLMs understand logic well but struggle with spatial math and strict file format
 
 ## Status
 
-Under active development. Working today: the Excalidraw codec (byte-exact round-trips through the plugin's `json` / `compressed-json` envelope), read-side tools — `vault_status`, `scheme_list`, `scheme_read` — and `scheme_create`, which draws a new scheme from a logical node/edge description with automatic layout.
+Under active development. Working today: the Excalidraw codec (byte-exact round-trips through the plugin's `json` / `compressed-json` envelope), the read side — `vault_status`, `scheme_list`, `scheme_read` — and two ways to draw.
+
+## Drawing: two tools, one choice
+
+Both write the same plugin-valid file and both take `overwrite=true` to redraw a scheme in place. They differ in who decides the arrangement.
+
+| | `scheme_create` | `scheme_draw` |
+| --- | --- | --- |
+| Who arranges | the server | the agent |
+| You provide | nodes, edges, optional `group` | boxes, zones, texts, arrows — each with coordinates |
+| Good for | architecture from code, a quick map, a first draft, anything where the information matters more than the picture | a drawing meant to be presented: swimlanes, a legend, emphasis by size or colour, a boundary band, a timeline |
+| Guarantees | nothing overlaps, connections stay readable | captions measured, ids and bindings correct, overlaps reported as warnings |
+| Fails by | being a competent but ordinary graph | being exactly as good as the composition it was given |
+
+`scheme_create` is the default. Reach for `scheme_draw` when the composition itself carries meaning — including to polish a scheme the automatic layout produced: read it back with `scheme_read`, keep what works, place the rest by hand.
+
+**Automatic layout** stacks nodes that share a `group` on a labeled backdrop, packs the groups into a grid close to a landscape shape (a row runs left to right, the next one right to left, so consecutive stages stay neighbours), and routes connections along that grid.
 
 ## Configuration
 
@@ -25,7 +41,7 @@ Under active development. Working today: the Excalidraw codec (byte-exact round-
 ```json
 {
   "servers": {
-    "snail-mcp-vault": {
+    "mem1": {
       "type": "stdio",
       "command": "dotnet",
       "args": ["run", "--project", "<PATH TO src DIRECTORY>"],

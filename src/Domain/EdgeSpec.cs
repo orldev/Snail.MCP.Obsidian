@@ -3,7 +3,7 @@ using System.ComponentModel;
 namespace Snail.MCP.Vault.Domain;
 
 /// <summary>One directed connection to draw between two node keys.</summary>
-public sealed record EdgeSpec
+public sealed record EdgeSpec : IEdgeStyle
 {
     [Description("Key of the source node.")]
     public required string From { get; init; }

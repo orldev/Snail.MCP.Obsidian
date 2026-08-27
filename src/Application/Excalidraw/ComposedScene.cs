@@ -8,4 +8,7 @@ public sealed record ComposedScene
     public required JsonObject Scene { get; init; }
 
     public required IReadOnlyList<SchemeCaption> Captions { get; init; }
+
+    /// <summary>Things worth telling the author about the drawing — overlapping blocks and the like.</summary>
+    public IReadOnlyList<string> Warnings { get; init; } = [];
 }

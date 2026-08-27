@@ -9,7 +9,7 @@ using Snail.MCP.Vault.Domain;
 namespace Snail.MCP.Vault.Application.Schemes;
 
 /// <summary>Finds Excalidraw schemes in the vault, serves their logical graphs, and draws new ones.</summary>
-public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer)
+public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer, SceneDrafter drafter)
 {
     private const string PluginMarker = "excalidraw-plugin:";
 
@@ -33,16 +33,29 @@ public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer)
         return GraphProjection.Project(scene);
     }
 
-    public string Create(string relativePath, SchemeSpec spec)
+    public string Create(string relativePath, SchemeSpec spec, bool overwrite = false)
     {
         var path = relativePath.EndsWith(".md") ? relativePath : $"{relativePath}.md";
-        if (vault.Exists(path))
-            throw new InvalidOperationException($"'{path}' already exists; creating a scheme never overwrites files.");
+        if (!overwrite && vault.Exists(path))
+            throw new InvalidOperationException($"'{path}' already exists; pass overwrite=true to redraw it in place instead of inventing a new path.");
 
         var composed = composer.Compose(spec);
 
         vault.Write(path, ComposeMarkdown(composed));
         return path;
+    }
+
+    /// <summary>Writes a drawing composed by the caller; returns the path and anything worth warning about.</summary>
+    public (string Path, IReadOnlyList<string> Warnings) Draw(string relativePath, DrawSpec spec, bool overwrite = false)
+    {
+        var path = relativePath.EndsWith(".md") ? relativePath : $"{relativePath}.md";
+        if (!overwrite && vault.Exists(path))
+            throw new InvalidOperationException($"'{path}' already exists; pass overwrite=true to redraw it in place instead of inventing a new path.");
+
+        var drafted = drafter.Draft(spec);
+
+        vault.Write(path, ComposeMarkdown(drafted));
+        return (path, drafted.Warnings);
     }
 
     private static string ComposeMarkdown(ComposedScene composed)

@@ -14,5 +14,6 @@ public static class VaultServiceCollectionExtensions
             .AddSingleton(VaultConfig.Load())
             .AddSingleton<IVaultStore, FileSystemVaultStore>()
             .AddSingleton<SceneComposer>()
+            .AddSingleton<SceneDrafter>()
             .AddSingleton<SchemeCatalog>();
 }

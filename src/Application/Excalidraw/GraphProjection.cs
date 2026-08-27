@@ -12,6 +12,7 @@ public static class GraphProjection
     {
         var elements = LivingElements(scene);
         var captions = CaptionsByContainer(elements);
+        var plates = GroupPlates(elements);
 
         List<SchemeNode> nodes = [];
         List<SchemeEdge> edges = [];
@@ -20,8 +21,11 @@ public static class GraphProjection
         foreach (var element in elements)
         {
             var type = element["type"]?.GetValue<string>() ?? "";
+            if (Marker(element) is not null)
+                continue;
+
             if (NodeShapes.Contains(type))
-                nodes.Add(ToNode(element, type, captions));
+                nodes.Add(ToNode(element, type, captions, plates));
             else if (type is "arrow")
                 edges.Add(ToEdge(element, captions));
             else if (type is "text" && Text(element["containerId"]) is null)
@@ -30,6 +34,24 @@ public static class GraphProjection
 
         return new SchemeGraph { Nodes = nodes, Edges = edges, Labels = labels };
     }
+
+    /// <summary>Group backdrops this server drew, as (name, rectangle) — the source of each node's group.</summary>
+    private static List<(string Name, double X, double Y, double Width, double Height)> GroupPlates(List<JsonNode> elements)
+    {
+        List<(string, double, double, double, double)> plates = [];
+        foreach (var element in elements)
+        {
+            if (Marker(element) is not { } marker || Text(marker["role"]) != SceneMarkers.GroupPlate)
+                continue;
+
+            plates.Add((Text(marker["group"]) ?? "", Number(element["x"]), Number(element["y"]),
+                Number(element["width"]), Number(element["height"])));
+        }
+
+        return plates;
+    }
+
+    private static JsonNode? Marker(JsonNode element) => element["customData"]?[SceneMarkers.Namespace];
 
     private static List<JsonNode> LivingElements(JsonNode scene)
     {
@@ -58,15 +80,24 @@ public static class GraphProjection
         return captions;
     }
 
-    private static SchemeNode ToNode(JsonNode element, string shape, Dictionary<string, string> captions)
+    private static SchemeNode ToNode(
+        JsonNode element,
+        string shape,
+        Dictionary<string, string> captions,
+        List<(string Name, double X, double Y, double Width, double Height)> plates)
     {
         var id = Text(element["id"]) ?? "";
+        var centreX = Number(element["x"]) + Number(element["width"]) / 2;
+        var centreY = Number(element["y"]) + Number(element["height"]) / 2;
 
         return new SchemeNode
         {
             Id = id,
             Shape = shape,
             Text = captions.GetValueOrDefault(id, ""),
+            Group = plates.FirstOrDefault(plate =>
+                centreX >= plate.X && centreX <= plate.X + plate.Width &&
+                centreY >= plate.Y && centreY <= plate.Y + plate.Height).Name,
             X = Number(element["x"]),
             Y = Number(element["y"]),
             Width = Number(element["width"]),

@@ -31,7 +31,7 @@ public class SchemeCatalogTests
     }
 
     internal static SchemeCatalog Catalog(Dictionary<string, string> files) =>
-        new(new FakeVaultStore(files), new SceneComposer(new Random(42)));
+        new(new FakeVaultStore(files), new SceneComposer(new Random(42)), new SceneDrafter(new Random(42)));
 
     private static string SchemeFile() =>
         $"---\n\nexcalidraw-plugin: parsed\n\n---\n\n# Excalidraw Data\n\n## Text Elements\n\n%%\n## Drawing\n```compressed-json\n{LzString.CompressToBase64(SceneJson)}\n```\n%%";

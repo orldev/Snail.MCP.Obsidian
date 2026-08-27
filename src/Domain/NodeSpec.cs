@@ -3,7 +3,7 @@ using System.ComponentModel;
 namespace Snail.MCP.Vault.Domain;
 
 /// <summary>One node to draw; the key is how edges refer to it.</summary>
-public sealed record NodeSpec
+public sealed record NodeSpec : INodeStyle
 {
     [Description("Identifier used by edges to refer to this node.")]
     public required string Key { get; init; }
@@ -13,6 +13,9 @@ public sealed record NodeSpec
 
     [Description("rectangle (default), diamond or ellipse.")]
     public string Shape { get; init; } = "rectangle";
+
+    [Description("Optional group name, e.g. 'Clients' or 'Backend'. Nodes sharing a group are stacked vertically inside a labeled frame; groups are laid out as columns by dependency flow. Grouping keeps big schemes compact and readable.")]
+    public string? Group { get; init; }
 
     [Description("Outline color as hex, e.g. #1971c2. Default #1e1e1e.")]
     public string? StrokeColor { get; init; }

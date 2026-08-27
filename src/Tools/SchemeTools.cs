@@ -25,14 +25,56 @@ public sealed class SchemeTools(SchemeCatalog catalog, VaultConfig config)
         catalog.Read(path);
 
     [McpServerTool(Name = "scheme_create")]
-    [Description("Draws a new Excalidraw scheme from a logical description; the server computes the layout, ids and bindings itself. Never overwrites an existing file.")]
+    [Description(
+        "Draws an Excalidraw scheme from a logical description: you list what exists and what connects to what, " +
+        "the server computes the arrangement, ids and bindings. THE DEFAULT CHOICE — use it whenever the point is " +
+        "the information rather than the picture: an architecture drawn from the code, a quick map of a system, a " +
+        "first draft to refine later, or any request that does not say how the drawing should look. The layout is " +
+        "guaranteed readable: groups become labeled areas packed into a grid, and nothing overlaps. " +
+        "When the composition itself has to carry meaning — lanes, a legend, emphasis, a deliberate arrangement — " +
+        "use scheme_draw instead. To rework an existing scheme, call this with the SAME path, overwrite=true and " +
+        "the FULL new spec — never invent a neighbouring file name.")]
     public object Create(
-        [Description("Vault-relative path for the new file, e.g. 'Excalidraw/Payments.md'.")] string path,
-        [Description("Nodes to draw; 'key' names the node for edges, 'text' is the caption, optional 'shape' is rectangle (default), diamond or ellipse.")] IReadOnlyList<NodeSpec> nodes,
-        [Description("Directed connections between node keys, each with an optional label.")] IReadOnlyList<EdgeSpec>? edges = null)
+        [Description("Vault-relative path of the scheme file, e.g. 'Excalidraw/Payments.md'.")] string path,
+        [Description("Nodes to draw; 'key' names the node for edges, 'text' is the caption, optional 'shape' is rectangle (default), diamond or ellipse. Optional 'group' stacks related nodes inside a labeled frame — prefer groups for schemes with more than ~8 nodes.")] IReadOnlyList<NodeSpec> nodes,
+        [Description("Directed connections between node keys, each with an optional label.")] IReadOnlyList<EdgeSpec>? edges = null,
+        [Description("Set true to redraw an existing file in place; the whole drawing is replaced by this spec. Without it an existing path is refused.")] bool overwrite = false)
     {
-        var createdPath = catalog.Create(path, new SchemeSpec { Nodes = nodes, Edges = edges ?? [] });
+        var createdPath = catalog.Create(path, new SchemeSpec { Nodes = nodes, Edges = edges ?? [] }, overwrite);
 
         return new { path = createdPath, nodeCount = nodes.Count, edgeCount = edges?.Count ?? 0 };
+    }
+
+    [McpServerTool(Name = "scheme_draw")]
+    [Description(
+        "Draws a scheme you compose yourself: you place every block, zone and label on the canvas, the server only " +
+        "renders it — measuring captions, generating ids, binding arrows and warning about overlaps. " +
+        "USE THIS when the composition itself carries meaning and automatic layout cannot express it: swimlanes per " +
+        "team or stage, nested or overlapping areas, a legend explaining what the colours mean, deliberate emphasis " +
+        "through size or colour, a boundary band, a radial or timeline arrangement — or when the drawing is meant to " +
+        "be presented (a status review, a report, a slide) rather than merely read. Also use it to polish a scheme " +
+        "that scheme_create laid out: read it back, keep what works, place the rest by hand. " +
+        "Canvas units are pixels: a block is roughly 200-450 wide and 70-150 tall, 60-120 of space between blocks " +
+        "reads well, and a zone needs about 60 above its first block for the title. Compose deliberately — this tool " +
+        "does nothing to save a careless arrangement. For an ordinary graph where any sensible layout will do, " +
+        "prefer scheme_create.")]
+    public object Draw(
+        [Description("Vault-relative path of the scheme file, e.g. 'Excalidraw/Payments.md'.")] string path,
+        [Description("Blocks with captions; 'key' names the block for arrows.")] IReadOnlyList<DrawBox> boxes,
+        [Description("Background areas drawn under everything else — lanes, sections, highlighted regions.")] IReadOnlyList<DrawZone>? zones = null,
+        [Description("Free-standing texts: titles, legends, annotations.")] IReadOnlyList<DrawText>? texts = null,
+        [Description("Connections between blocks, each optionally routed through explicit bends.")] IReadOnlyList<DrawArrow>? arrows = null,
+        [Description("Set true to redraw an existing file in place; the whole drawing is replaced. Without it an existing path is refused.")] bool overwrite = false)
+    {
+        var spec = new DrawSpec
+        {
+            Boxes = boxes,
+            Zones = zones ?? [],
+            Texts = texts ?? [],
+            Arrows = arrows ?? [],
+        };
+        var (writtenPath, warnings) = catalog.Draw(path, spec, overwrite);
+
+        return new { path = writtenPath, boxCount = boxes.Count, arrowCount = arrows?.Count ?? 0, warnings };
     }
 }
