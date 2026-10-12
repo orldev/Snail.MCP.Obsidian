@@ -17,7 +17,7 @@ public class FileSystemVaultStoreTests : IDisposable
 
         var files = Store().MarkdownFiles().OrderBy(p => p).ToList();
 
-        Assert.Equal(["Note.md", Path.Combine("Sub", "Deep.md")], files);
+        Assert.Equal(["Note.md", "Sub/Deep.md"], files);
     }
 
     [Fact]

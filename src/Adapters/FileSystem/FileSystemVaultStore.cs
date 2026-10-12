@@ -14,7 +14,7 @@ public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
         {
             var relative = Path.GetRelativePath(config.RootPath, file);
             if (!IsInsideServiceFolder(relative))
-                yield return relative;
+                yield return relative.Replace(Path.DirectorySeparatorChar, '/');
         }
     }
 
