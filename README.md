@@ -36,7 +36,7 @@ A native program on macOS, Linux and Windows, a framework-dependent one elsewher
 the machine it runs on:
 
 ```bash
-dotnet tool install -g Snail.MCP.Vault      # then the command is snail-mcp-vault
+dotnet tool install -g Snail.MCP.Vault      # then the command is s3l-mcp-vault
 dnx Snail.MCP.Vault --yes                   # or run it without installing
 ```
 
@@ -45,7 +45,7 @@ at `current`, which follows every later publication:
 
 ```bash
 dotnet publish src -c Release -r osx-arm64 -p:Install=true
-claude mcp add -s user mem1 -e SNAIL_MCP_VAULT_PATH="/absolute/path/to/Obsidian Vault" -- ~/.snail-mcp/Snail.MCP.Vault/current/Snail.MCP.Vault
+claude mcp add -s user mem1 -e SNAIL_MCP_VAULT_PATH="/absolute/path/to/Obsidian Vault" -- ~/.s3l-mcp/Snail.MCP.Vault/current/Snail.MCP.Vault
 ```
 
 Measured against `dotnet Snail.MCP.Vault.dll` on an Apple Silicon Mac: see *Performance* below.

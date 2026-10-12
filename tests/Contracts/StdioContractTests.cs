@@ -36,6 +36,15 @@ public sealed class StdioContractTests : IDisposable
         Assert.Equal(["scheme_create", "scheme_draw", "scheme_list", "scheme_read", "vault_status"], tools.Select(tool => tool.Name).Order(StringComparer.Ordinal));
     }
 
+    /// <summary>A client knows the server by the command a person types to start it.</summary>
+    [Fact]
+    public async Task Initialize_AsAProgram_NamesTheServerByItsCommand()
+    {
+        await using var client = await StartedAsync();
+
+        Assert.Equal("s3l-mcp-vault", client.ServerInfo.Name);
+    }
+
     /// <summary>
     /// The guard rules of every Snail server, on the list a model receives: names in snake case and listed once, the tool
     /// and every parameter described, read-only or destructive stated, every allowed value named, English.

@@ -8,7 +8,7 @@ var builder = McpHost.CreateBuilder(args);
 
 builder.Services
     .AddVault()
-    .AddMcpServer()
+    .AddMcpServer(server => server.ServerInfo = ServerIdentity.Of(typeof(Program).Assembly))
     .WithStdioServerTransport()
     .WithTools<SchemeTools>(ToolJson.Options(VaultJson.Default));
 
