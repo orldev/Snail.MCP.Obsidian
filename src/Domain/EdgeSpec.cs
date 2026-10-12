@@ -12,7 +12,7 @@ public sealed record EdgeSpec : IEdgeStyle
     public required string To { get; init; }
 
     [Description("Text drawn on the arrow. Empty for no label.")]
-    public string Label { get; init; } = "";
+    public string Label { get; set; } = "";
 
     [Description("Arrow color as hex, e.g. #e03131. Default #1e1e1e.")]
     public string? Color { get; init; }

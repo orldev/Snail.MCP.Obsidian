@@ -145,7 +145,7 @@ internal sealed class ElementFactory(Random random)
 
         var points = new JsonArray(new JsonArray(0d, 0d));
         foreach (var offset in offsets)
-            points.Add(new JsonArray(offset.X, offset.Y));
+            points.Add((JsonNode)new JsonArray(offset.X, offset.Y));
 
         return new JsonObject
         {
@@ -203,7 +203,7 @@ internal sealed class ElementFactory(Random random)
         };
 
     public static void Bind(JsonObject host, JsonObject bound, string type) =>
-        host["boundElements"]!.AsArray().Add(new JsonObject { ["id"] = Id(bound), ["type"] = type });
+        host["boundElements"]!.AsArray().Add((JsonNode)new JsonObject { ["id"] = Id(bound), ["type"] = type });
 
     public static string Id(JsonObject element) => element["id"]!.GetValue<string>();
 

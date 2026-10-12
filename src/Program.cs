@@ -4,14 +4,16 @@ using Microsoft.Extensions.Logging;
 using Snail.MCP.Vault.Extensions;
 using Snail.MCP.Vault.Tools;
 
-var builder = Host.CreateApplicationBuilder(args);
+// The empty host: the server reads its one setting itself, so the full builder's appsettings, their watchers, the
+// command line and the default loggers would load for nothing. stdout carries JSON-RPC; log lines go to stderr.
+var builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings { Args = args });
 
-builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
+builder.Logging.SetMinimumLevel(LogLevel.Information).AddProvider(new StderrLogging());
 
 builder.Services
     .AddVault()
     .AddMcpServer()
     .WithStdioServerTransport()
-    .WithTools<SchemeTools>();
+    .WithTools<SchemeTools>(VaultJson.ToolOptions);
 
 await builder.Build().RunAsync();

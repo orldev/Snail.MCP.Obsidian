@@ -5,5 +5,5 @@ public sealed record SchemeSpec
 {
     public required IReadOnlyList<NodeSpec> Nodes { get; init; }
 
-    public IReadOnlyList<EdgeSpec> Edges { get; init; } = [];
+    public IReadOnlyList<EdgeSpec> Edges { get; set; } = [];
 }

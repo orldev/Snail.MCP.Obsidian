@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
-        <RuntimeIdentifiers>win-x64;win-arm64;osx-arm64;linux-x64;linux-arm64;linux-musl-x64</RuntimeIdentifiers>
         <OutputType>Exe</OutputType>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -11,9 +10,23 @@
         <ToolCommandName>snail-mcp-vault</ToolCommandName>
         <PackageType>McpServer</PackageType>
 
-        <SelfContained>true</SelfContained>
-        <PublishSelfContained>true</PublishSelfContained>
-        <PublishSingleFile>true</PublishSingleFile>
+        <!--
+            A native program wherever it is published for a runtime, and a native dotnet tool package for each platform
+            with a framework-dependent one for the rest (docs/publishing.md in Snail.MCP.CleanUp): `dotnet pack` makes
+            the package that points at them, `dotnet pack -r <rid>` each native one on its own system,
+            `dotnet pack -r any -p:PublishAot=false` the fallback. The vault is files only, so Windows is among them.
+        -->
+        <PublishAot>true</PublishAot>
+        <OptimizationPreference>Size</OptimizationPreference>
+        <ToolPackageRuntimeIdentifiers>osx-arm64;osx-x64;linux-x64;linux-arm64;win-x64;any</ToolPackageRuntimeIdentifiers>
+        <IsAotCompatible>true</IsAotCompatible>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+        <PublishDocumentationFile>false</PublishDocumentationFile>
+        <PublishReferencesDocumentationFiles>false</PublishReferencesDocumentationFiles>
+
+        <!-- Published into ~/.snail-mcp with -p:Install=true. -->
+        <SnailMcpName>Snail.MCP.Vault</SnailMcpName>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageId>Snail.MCP.Vault</PackageId>

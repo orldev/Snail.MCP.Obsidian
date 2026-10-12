@@ -25,7 +25,7 @@ public sealed class SceneDrafter(Random? random = null)
         // Zones are the ground everything else stands on, so they go in first.
         foreach (var zone in spec.Zones)
         {
-            elements.Add(factory.Plate(
+            elements.Add((JsonNode)factory.Plate(
                 new Rect(zone.X, zone.Y, zone.Width, zone.Height),
                 zone.BackgroundColor ?? "#f8f9fa",
                 zone.StrokeColor ?? "#ced4da",
@@ -37,7 +37,7 @@ public sealed class SceneDrafter(Random? random = null)
             var size = zone.TitleSize ?? ElementFactory.DefaultFontSize;
             var title = factory.Label(zone.Title, zone.X + ZoneTitlePadding, zone.Y + ZoneTitlePadding / 2.0, size, zone.TitleColor ?? "#868e96", "excalifont");
             captions.Add(new SchemeCaption { Text = zone.Title, Id = ElementFactory.Id(title) });
-            elements.Add(title);
+            elements.Add((JsonNode)title);
         }
 
         foreach (var box in spec.Boxes)
@@ -47,12 +47,12 @@ public sealed class SceneDrafter(Random? random = null)
 
             var shape = factory.Shape(box, rect);
             boxes[box.Key] = (shape, rect);
-            elements.Add(shape);
+            elements.Add((JsonNode)shape);
 
             var caption = factory.Caption(box, box.Text, shape, rect);
             ElementFactory.Bind(shape, caption, "text");
             captions.Add(new SchemeCaption { Text = box.Text, Id = ElementFactory.Id(caption) });
-            elements.Add(caption);
+            elements.Add((JsonNode)caption);
         }
 
         foreach (var text in spec.Texts)
@@ -65,7 +65,7 @@ public sealed class SceneDrafter(Random? random = null)
                 text.Color ?? "#1e1e1e",
                 text.Font ?? "excalifont");
             captions.Add(new SchemeCaption { Text = text.Text, Id = ElementFactory.Id(label) });
-            elements.Add(label);
+            elements.Add((JsonNode)label);
         }
 
         foreach (var arrow in spec.Arrows)
@@ -76,7 +76,7 @@ public sealed class SceneDrafter(Random? random = null)
             var drawn = factory.Arrow(arrow, fromElement, toElement, Route(arrow, fromRect, toRect));
             ElementFactory.Bind(fromElement, drawn, "arrow");
             ElementFactory.Bind(toElement, drawn, "arrow");
-            elements.Add(drawn);
+            elements.Add((JsonNode)drawn);
 
             if (arrow.Label.Length == 0)
                 continue;
@@ -84,7 +84,7 @@ public sealed class SceneDrafter(Random? random = null)
             var label = factory.ArrowLabel(arrow.Label, drawn);
             ElementFactory.Bind(drawn, label, "text");
             captions.Add(new SchemeCaption { Text = arrow.Label, Id = ElementFactory.Id(label) });
-            elements.Add(label);
+            elements.Add((JsonNode)label);
         }
 
         return new ComposedScene

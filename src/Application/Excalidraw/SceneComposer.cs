@@ -37,13 +37,13 @@ public sealed class SceneComposer(Random? random = null)
 
         // Backdrops first: they must sit below the nodes they carry.
         foreach (var container in layout.Containers)
-            elements.Add(GroupPlate(factory, container));
+            elements.Add((JsonNode)GroupPlate(factory, container));
 
         foreach (var container in layout.Containers)
         {
             var title = GroupTitle(factory, container);
             captions.Add(new SchemeCaption { Text = container.Title, Id = ElementFactory.Id(title) });
-            elements.Add(title);
+            elements.Add((JsonNode)title);
         }
 
         foreach (var node in spec.Nodes)
@@ -51,12 +51,12 @@ public sealed class SceneComposer(Random? random = null)
             var frame = layout.Frames[node.Key];
             var shape = factory.Shape(node, frame);
             shapesByKey[node.Key] = shape;
-            elements.Add(shape);
+            elements.Add((JsonNode)shape);
 
             var caption = factory.Caption(node, node.Text, shape, frame);
             ElementFactory.Bind(shape, caption, "text");
             captions.Add(new SchemeCaption { Text = node.Text, Id = ElementFactory.Id(caption) });
-            elements.Add(caption);
+            elements.Add((JsonNode)caption);
         }
 
         for (var i = 0; i < spec.Edges.Count; i++)
@@ -65,7 +65,7 @@ public sealed class SceneComposer(Random? random = null)
             var arrow = factory.Arrow(edge, shapesByKey[edge.From], shapesByKey[edge.To], layout.Routes[i]);
             ElementFactory.Bind(shapesByKey[edge.From], arrow, "arrow");
             ElementFactory.Bind(shapesByKey[edge.To], arrow, "arrow");
-            elements.Add(arrow);
+            elements.Add((JsonNode)arrow);
 
             if (edge.Label.Length == 0)
                 continue;
@@ -73,7 +73,7 @@ public sealed class SceneComposer(Random? random = null)
             var label = factory.ArrowLabel(edge.Label, arrow);
             ElementFactory.Bind(arrow, label, "text");
             captions.Add(new SchemeCaption { Text = edge.Label, Id = ElementFactory.Id(label) });
-            elements.Add(label);
+            elements.Add((JsonNode)label);
         }
 
         return new ComposedScene { Scene = ElementFactory.Scene(elements), Captions = captions };

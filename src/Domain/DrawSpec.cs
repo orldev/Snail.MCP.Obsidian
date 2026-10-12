@@ -6,16 +6,16 @@ namespace Snail.MCP.Vault.Domain;
 public sealed record DrawSpec
 {
     [Description("Background areas drawn first, under everything else — lanes, sections, highlighted regions.")]
-    public IReadOnlyList<DrawZone> Zones { get; init; } = [];
+    public IReadOnlyList<DrawZone> Zones { get; set; } = [];
 
     [Description("Blocks with captions.")]
-    public IReadOnlyList<DrawBox> Boxes { get; init; } = [];
+    public IReadOnlyList<DrawBox> Boxes { get; set; } = [];
 
     [Description("Free-standing texts: titles, legends, annotations.")]
-    public IReadOnlyList<DrawText> Texts { get; init; } = [];
+    public IReadOnlyList<DrawText> Texts { get; set; } = [];
 
     [Description("Connections between blocks.")]
-    public IReadOnlyList<DrawArrow> Arrows { get; init; } = [];
+    public IReadOnlyList<DrawArrow> Arrows { get; set; } = [];
 }
 
 /// <summary>A background area; its title is drawn in the top-left corner.</summary>
@@ -32,7 +32,7 @@ public sealed record DrawZone
     public required double Height { get; init; }
 
     [Description("Caption drawn inside the top-left corner. Empty for a bare area.")]
-    public string Title { get; init; } = "";
+    public string Title { get; set; } = "";
 
     [Description("Fill color as hex, e.g. #f8f9fa, or 'transparent'. Default #f8f9fa.")]
     public string? BackgroundColor { get; init; }
@@ -72,7 +72,7 @@ public sealed record DrawBox : INodeStyle
     public double? Height { get; init; }
 
     [Description("rectangle (default), diamond or ellipse.")]
-    public string Shape { get; init; } = "rectangle";
+    public string Shape { get; set; } = "rectangle";
 
     [Description("Outline color as hex, e.g. #1971c2. Default #1e1e1e.")]
     public string? StrokeColor { get; init; }
@@ -130,16 +130,16 @@ public sealed record DrawArrow : IEdgeStyle
     public required string To { get; init; }
 
     [Description("Face of the source block the arrow leaves from: auto (default), left, right, top or bottom.")]
-    public string FromSide { get; init; } = "auto";
+    public string FromSide { get; set; } = "auto";
 
     [Description("Face of the target block the arrow enters: auto (default), left, right, top or bottom.")]
-    public string ToSide { get; init; } = "auto";
+    public string ToSide { get; set; } = "auto";
 
     [Description("Corner points the arrow passes through, as [x, y] pairs in canvas units. Empty for a straight line.")]
-    public IReadOnlyList<IReadOnlyList<double>> Bends { get; init; } = [];
+    public IReadOnlyList<IReadOnlyList<double>> Bends { get; set; } = [];
 
     [Description("Text drawn on the arrow. Empty for no label.")]
-    public string Label { get; init; } = "";
+    public string Label { get; set; } = "";
 
     [Description("Arrow color as hex, e.g. #e03131. Default #1e1e1e.")]
     public string? Color { get; init; }

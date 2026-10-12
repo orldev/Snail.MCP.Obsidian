@@ -30,6 +30,26 @@ Both write the same plugin-valid file and both take `overwrite=true` to redraw a
 
 **Automatic layout** stacks nodes that share a `group` on a labeled backdrop, packs the groups into a grid close to a landscape shape (a row runs left to right, the next one right to left, so consecutive stages stay neighbours), and routes connections along that grid.
 
+## Install
+
+A native program on macOS, Linux and Windows, a framework-dependent one elsewhere — `dotnet tool` picks the package of
+the machine it runs on:
+
+```bash
+dotnet tool install -g Snail.MCP.Vault      # then the command is snail-mcp-vault
+dnx Snail.MCP.Vault --yes                   # or run it without installing
+```
+
+On a machine that builds it from this repository, publish it beside the other Snail MCP servers and point the client
+at `current`, which follows every later publication:
+
+```bash
+dotnet publish src -c Release -r osx-arm64 -p:Install=true
+claude mcp add -s user mem1 -e SNAIL_MCP_VAULT_PATH="/absolute/path/to/Obsidian Vault" -- ~/.snail-mcp/Snail.MCP.Vault/current/Snail.MCP.Vault
+```
+
+Measured against `dotnet Snail.MCP.Vault.dll` on an Apple Silicon Mac: see *Performance* below.
+
 ## Configuration
 
 | Variable | Required | Description |

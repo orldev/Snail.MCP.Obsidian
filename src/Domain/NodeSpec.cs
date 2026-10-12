@@ -12,7 +12,7 @@ public sealed record NodeSpec : INodeStyle
     public required string Text { get; init; }
 
     [Description("rectangle (default), diamond or ellipse.")]
-    public string Shape { get; init; } = "rectangle";
+    public string Shape { get; set; } = "rectangle";
 
     [Description("Optional group name, e.g. 'Clients' or 'Backend'. Nodes sharing a group are stacked vertically inside a labeled frame; groups are laid out as columns by dependency flow. Grouping keeps big schemes compact and readable.")]
     public string? Group { get; init; }

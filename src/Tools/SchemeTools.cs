@@ -11,12 +11,11 @@ public sealed class SchemeTools(SchemeCatalog catalog, VaultConfig config)
 {
     [McpServerTool(Name = "vault_status")]
     [Description("Shows the vault root path and how many Excalidraw schemes it contains.")]
-    public object Status() =>
-        new { vaultPath = config.RootPath, schemeCount = catalog.List().Count };
+    public VaultStatus Status() => new(config.RootPath, catalog.List().Count);
 
     [McpServerTool(Name = "scheme_list")]
     [Description("Lists vault-relative paths of all Excalidraw scheme files.")]
-    public IReadOnlyList<string> List() => catalog.List();
+    public string[] List() => [.. catalog.List()];
 
     [McpServerTool(Name = "scheme_read")]
     [Description("Reads an Excalidraw scheme as a logical graph: nodes are shapes with their captions, edges are arrows between them, labels are free-standing texts.")]
@@ -34,7 +33,7 @@ public sealed class SchemeTools(SchemeCatalog catalog, VaultConfig config)
         "When the composition itself has to carry meaning — lanes, a legend, emphasis, a deliberate arrangement — " +
         "use scheme_draw instead. To rework an existing scheme, call this with the SAME path, overwrite=true and " +
         "the FULL new spec — never invent a neighbouring file name.")]
-    public object Create(
+    public CreatedScheme Create(
         [Description("Vault-relative path of the scheme file, e.g. 'Excalidraw/Payments.md'.")] string path,
         [Description("Nodes to draw; 'key' names the node for edges, 'text' is the caption, optional 'shape' is rectangle (default), diamond or ellipse. Optional 'group' stacks related nodes inside a labeled frame — prefer groups for schemes with more than ~8 nodes.")] IReadOnlyList<NodeSpec> nodes,
         [Description("Directed connections between node keys, each with an optional label.")] IReadOnlyList<EdgeSpec>? edges = null,
@@ -42,7 +41,7 @@ public sealed class SchemeTools(SchemeCatalog catalog, VaultConfig config)
     {
         var createdPath = catalog.Create(path, new SchemeSpec { Nodes = nodes, Edges = edges ?? [] }, overwrite);
 
-        return new { path = createdPath, nodeCount = nodes.Count, edgeCount = edges?.Count ?? 0 };
+        return new CreatedScheme(createdPath, nodes.Count, edges?.Count ?? 0);
     }
 
     [McpServerTool(Name = "scheme_draw")]
@@ -58,7 +57,7 @@ public sealed class SchemeTools(SchemeCatalog catalog, VaultConfig config)
         "reads well, and a zone needs about 60 above its first block for the title. Compose deliberately — this tool " +
         "does nothing to save a careless arrangement. For an ordinary graph where any sensible layout will do, " +
         "prefer scheme_create.")]
-    public object Draw(
+    public DrawnScheme Draw(
         [Description("Vault-relative path of the scheme file, e.g. 'Excalidraw/Payments.md'.")] string path,
         [Description("Blocks with captions; 'key' names the block for arrows.")] IReadOnlyList<DrawBox> boxes,
         [Description("Background areas drawn under everything else — lanes, sections, highlighted regions.")] IReadOnlyList<DrawZone>? zones = null,
@@ -75,6 +74,6 @@ public sealed class SchemeTools(SchemeCatalog catalog, VaultConfig config)
         };
         var (writtenPath, warnings) = catalog.Draw(path, spec, overwrite);
 
-        return new { path = writtenPath, boxCount = boxes.Count, arrowCount = arrows?.Count ?? 0, warnings };
+        return new DrawnScheme(writtenPath, boxes.Count, arrows?.Count ?? 0, warnings);
     }
 }
