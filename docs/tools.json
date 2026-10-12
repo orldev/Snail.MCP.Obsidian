@@ -1,0 +1,8 @@
+{
+  "intro": [
+    "A reliable, high-level API between an AI agent and an Obsidian vault: the server lets the agent semantically analyze and programmatically update Excalidraw schemes without any risk of corrupting their file structure. `scheme_create` lays a scheme out from nodes and edges and is the default; `scheme_draw` renders one the agent composed itself, when the composition carries meaning."
+  ],
+  "families": [
+    { "type": "SchemeTools", "slug": "schemes", "title": "Excalidraw schemes: read and draw" }
+  ]
+}

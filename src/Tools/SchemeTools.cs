@@ -6,24 +6,30 @@ using Snail.MCP.Vault.Domain;
 
 namespace Snail.MCP.Vault.Tools;
 
+/// <summary>The MCP tools that read and draw Excalidraw schemes in the vault.</summary>
+/// <remarks>The two that draw say they are destructive: with overwrite=true they replace a whole drawing.</remarks>
 [McpServerToolType]
 public sealed class SchemeTools(SchemeCatalog catalog, VaultConfig config)
 {
-    [McpServerTool(Name = "vault_status")]
+    /// <summary>Where the vault is and how many schemes it holds.</summary>
+    [McpServerTool(Name = "vault_status", ReadOnly = true)]
     [Description("Shows the vault root path and how many Excalidraw schemes it contains.")]
     public VaultStatus Status() => new(config.RootPath, catalog.List().Count);
 
-    [McpServerTool(Name = "scheme_list")]
+    /// <summary>The paths of every scheme.</summary>
+    [McpServerTool(Name = "scheme_list", ReadOnly = true)]
     [Description("Lists vault-relative paths of all Excalidraw scheme files.")]
     public string[] List() => [.. catalog.List()];
 
-    [McpServerTool(Name = "scheme_read")]
+    /// <summary>A scheme as its logical graph.</summary>
+    [McpServerTool(Name = "scheme_read", ReadOnly = true)]
     [Description("Reads an Excalidraw scheme as a logical graph: nodes are shapes with their captions, edges are arrows between them, labels are free-standing texts.")]
     public SchemeGraph Read(
         [Description("Vault-relative path of the scheme file, e.g. 'Excalidraw/RAG.md'.")] string path) =>
         catalog.Read(path);
 
-    [McpServerTool(Name = "scheme_create")]
+    /// <summary>Lays out and writes a scheme from nodes and edges.</summary>
+    [McpServerTool(Name = "scheme_create", ReadOnly = false, Destructive = true)]
     [Description(
         "Draws an Excalidraw scheme from a logical description: you list what exists and what connects to what, " +
         "the server computes the arrangement, ids and bindings. THE DEFAULT CHOICE — use it whenever the point is " +
@@ -44,7 +50,8 @@ public sealed class SchemeTools(SchemeCatalog catalog, VaultConfig config)
         return new CreatedScheme(createdPath, nodes.Count, edges?.Count ?? 0);
     }
 
-    [McpServerTool(Name = "scheme_draw")]
+    /// <summary>Renders and writes a scheme the agent composed.</summary>
+    [McpServerTool(Name = "scheme_draw", ReadOnly = false, Destructive = true)]
     [Description(
         "Draws a scheme you compose yourself: you place every block, zone and label on the canvas, the server only " +
         "renders it — measuring captions, generating ids, binding arrows and warning about overlaps. " +

@@ -8,6 +8,7 @@ public static class GraphProjection
 {
     private static readonly string[] NodeShapes = ["rectangle", "diamond", "ellipse", "image"];
 
+    /// <summary>The nodes, edges and labels of a scene, leaving out deleted elements and the server's own decorations.</summary>
     public static SchemeGraph Project(JsonNode scene)
     {
         var elements = LivingElements(scene);

@@ -8,6 +8,7 @@ public static class ExcalidrawCodec
 {
     private const int CompressedLineWidth = 256;
 
+    /// <summary>Splits a file into the drawing payload and the text around it.</summary>
     public static ExcalidrawDocument Parse(string markdown)
     {
         var fence = FindOpeningFence(markdown);
@@ -22,14 +23,17 @@ public static class ExcalidrawCodec
         };
     }
 
+    /// <summary>Joins the segments back into the file, byte for byte.</summary>
     public static string Serialize(ExcalidrawDocument document) =>
         $"{document.Prefix}{document.Drawing}{document.Suffix}";
 
+    /// <summary>The drawing payload as plain scene JSON, decompressed when stored compressed.</summary>
     public static string DecodeDrawing(ExcalidrawDocument document) =>
         document.Format == DrawingFormat.CompressedJson
             ? LzString.DecompressFromBase64(StripLineBreaks(document.Drawing))
             : document.Drawing;
 
+    /// <summary>The document with a new scene, stored in the format the document already uses.</summary>
     public static ExcalidrawDocument WithDrawing(ExcalidrawDocument document, string drawingJson) =>
         document with { Drawing = EncodeDrawing(drawingJson, document.Format) };
 
@@ -49,6 +53,7 @@ public static class ExcalidrawCodec
         }
 
         lines.Append('\n');
+
         return lines.ToString();
     }
 

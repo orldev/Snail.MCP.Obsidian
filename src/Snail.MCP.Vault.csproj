@@ -1,48 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Snail.Sdk.Mcp">
 
+    <!--
+        A native stdio server (Snail.Sdk.Mcp: SnailMcpNative and SnailMcpTransport at their defaults): published with
+        Native AOT, a native dotnet tool package for each platform with a framework-dependent one for the rest. The
+        vault is files only, so Windows is among them.
+    -->
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
-        <OutputType>Exe</OutputType>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
 
-        <PackAsTool>true</PackAsTool>
-        <ToolCommandName>snail-mcp-vault</ToolCommandName>
-        <PackageType>McpServer</PackageType>
-
-        <!--
-            A native program wherever it is published for a runtime, and a native dotnet tool package for each platform
-            with a framework-dependent one for the rest (docs/publishing.md in Snail.MCP.CleanUp): `dotnet pack` makes
-            the package that points at them, `dotnet pack -r <rid>` each native one on its own system,
-            `dotnet pack -r any -p:PublishAot=false` the fallback. The vault is files only, so Windows is among them.
-        -->
-        <PublishAot>true</PublishAot>
-        <OptimizationPreference>Size</OptimizationPreference>
-        <ToolPackageRuntimeIdentifiers>osx-arm64;osx-x64;linux-x64;linux-arm64;win-x64;any</ToolPackageRuntimeIdentifiers>
-        <IsAotCompatible>true</IsAotCompatible>
-        <InvariantGlobalization>true</InvariantGlobalization>
-        <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
-        <PublishDocumentationFile>false</PublishDocumentationFile>
-        <PublishReferencesDocumentationFiles>false</PublishReferencesDocumentationFiles>
-
-        <!-- Published into ~/.snail-mcp with -p:Install=true. -->
-        <SnailMcpName>Snail.MCP.Vault</SnailMcpName>
-
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageId>Snail.MCP.Vault</PackageId>
+    <PropertyGroup>
         <PackageVersion>0.1.0</PackageVersion>
         <PackageTags>AI; MCP; server; stdio; obsidian; excalidraw</PackageTags>
         <Description>MCP server bridging AI agents and an Obsidian vault: semantic reading and safe programmatic editing of Excalidraw schemes and Markdown notes.</Description>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/"/>
-        <None Include="README.md" Pack="true" PackagePath="/"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5"/>
-        <PackageReference Include="ModelContextProtocol" Version="2.2.0"/>
+        <PackageReference Include="ModelContextProtocol"/>
     </ItemGroup>
 
 </Project>

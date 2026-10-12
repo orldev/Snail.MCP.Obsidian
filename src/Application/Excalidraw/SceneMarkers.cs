@@ -7,7 +7,10 @@ namespace Snail.MCP.Vault.Application.Excalidraw;
 /// </summary>
 public static class SceneMarkers
 {
+    /// <summary>The key of <c>customData</c> the marks live under.</summary>
     public const string Namespace = "snail";
+    /// <summary>Marks the backdrop of a group.</summary>
     public const string GroupPlate = "group";
+    /// <summary>Marks the title of a group.</summary>
     public const string GroupTitle = "groupTitle";
 }

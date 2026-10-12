@@ -6,6 +6,7 @@ namespace Snail.MCP.Vault.Adapters.FileSystem;
 /// <summary>Serves vault files from disk, refusing paths that escape the vault root.</summary>
 public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
 {
+    /// <inheritdoc/>
     public IEnumerable<string> MarkdownFiles()
     {
         var enumeration = new EnumerationOptions { RecurseSubdirectories = true };
@@ -18,10 +19,13 @@ public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
         }
     }
 
+    /// <inheritdoc/>
     public string Read(string relativePath) => File.ReadAllText(Resolve(relativePath));
 
+    /// <inheritdoc/>
     public bool Exists(string relativePath) => File.Exists(Resolve(relativePath));
 
+    /// <inheritdoc/>
     public void Write(string relativePath, string content)
     {
         var fullPath = Resolve(relativePath);

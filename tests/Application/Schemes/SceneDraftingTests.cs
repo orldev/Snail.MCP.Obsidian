@@ -18,6 +18,10 @@ public class SceneDraftingTests
         Arrows = [new DrawArrow { From = "app", To = "api", Label = "HTTPS" }],
     };
 
+    /// <remarks>
+    /// Blocks stay exactly where they were put. The zone is a block of the drawing too, and the arrow binds both ends.
+    /// The zone title and the legend live as free-standing texts.
+    /// </remarks>
     [Fact]
     public void DrawnSceneKeepsTheGivenPlacesAndReadsBack()
     {
@@ -30,22 +34,22 @@ public class SceneDraftingTests
         Assert.Equal("Free.md", path);
         Assert.Empty(warnings);
 
-        // blocks stay exactly where they were put
         var app = Assert.Single(graph.Nodes, node => node.Text == "App");
         Assert.Equal(40, app.X);
         Assert.Equal(60, app.Y);
 
-        // the zone is a block of the drawing too, and the arrow binds both ends
         Assert.Equal(3, graph.Nodes.Count);
         var arrow = Assert.Single(graph.Edges);
         Assert.Equal("HTTPS", arrow.Label);
         Assert.Equal(app.Id, arrow.FromId);
         Assert.Equal(graph.Nodes.Single(node => node.Text == "API").Id, arrow.ToId);
 
-        // the zone title and the legend live as free-standing texts
         Assert.Equal(["Клиент", "Легенда: зелёный — готово"], graph.Labels.Select(label => label.Text).Order());
     }
 
+    /// <remarks>
+    /// API sits to the right of App, so the arrow leaves the right face and enters the left one.
+    /// </remarks>
     [Fact]
     public void ArrowLeavesAndEntersThroughTheFacesFacingEachOther()
     {
@@ -57,7 +61,6 @@ public class SceneDraftingTests
         var scene = JsonNode.Parse(ExcalidrawCodec.DecodeDrawing(ExcalidrawCodec.Parse(files[path])))!;
         var arrow = Assert.Single(scene["elements"]!.AsArray(), element => element!["type"]!.GetValue<string>() == "arrow");
 
-        // API sits to the right of App, so the arrow leaves the right face and enters the left one
         Assert.Equal(1, arrow!["startBinding"]!["fixedPoint"]![0]!.GetValue<double>());
         Assert.Equal(0, arrow["endBinding"]!["fixedPoint"]![0]!.GetValue<double>());
     }

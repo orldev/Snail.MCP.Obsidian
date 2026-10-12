@@ -102,6 +102,9 @@ public class SchemeCreationTests
         Assert.Equal("Reworked", Assert.Single(catalog.Read(path).Nodes).Text);
     }
 
+    /// <remarks>
+    /// In the second column D follows its source A to the top, C follows B down — no crossing remains.
+    /// </remarks>
     [Fact]
     public void CrossingEdgesReorderRowsWithinAColumn()
     {
@@ -124,12 +127,14 @@ public class SchemeCreationTests
 
         var graph = catalog.Read(catalog.Create("Crossing", crossing));
 
-        // In the second column D follows its source A to the top, C follows B down — no crossing remains.
         var byText = graph.Nodes.ToDictionary(n => n.Text);
         Assert.True(byText["A"].Y < byText["B"].Y);
         Assert.True(byText["D"].Y < byText["C"].Y);
     }
 
+    /// <remarks>
+    /// a→c bends around column B through a waypoint; c→a leaves as a square bracket under the diagram.
+    /// </remarks>
     [Fact]
     public void LongAndBackwardEdgesRouteAroundNodes()
     {
@@ -158,7 +163,6 @@ public class SchemeCreationTests
         var arrows = scene["elements"]!.AsArray()
             .Where(element => element!["type"]!.GetValue<string>() == "arrow").ToList();
 
-        // a→c bends around column B through a waypoint; c→a leaves as a square bracket under the diagram
         Assert.Single(arrows, arrow => arrow!["points"]!.AsArray().Count == 3);
 
         var bracket = Assert.Single(arrows, arrow => arrow!["points"]!.AsArray().Count == 4);
@@ -169,6 +173,11 @@ public class SchemeCreationTests
         Assert.True(lane > catalog.Read(path).Nodes.Max(n => n.Y + n.Height), "the bracket must clear every node");
     }
 
+    /// <remarks>
+    /// Plates are drawn before the nodes they carry, so they stay underneath. Decorations stay out of the logical graph:
+    /// only the four real nodes read back, each knowing its group. Group members stack vertically; the next group sits
+    /// beside the previous one. DB follows API into the neighbouring cell — to its right, or on the row below.
+    /// </remarks>
     [Fact]
     public void GroupedNodesLandInsideLabeledFrames()
     {
@@ -206,11 +215,9 @@ public class SchemeCreationTests
         Assert.Equal(["Backend", "Clients"], marked.Where(m => m.Role == "groupTitle").Select(m => m.Group).Order());
         Assert.All(marked.Where(m => m.Role == "group"), plate => Assert.Equal("rectangle", plate.Type));
 
-        // plates are drawn before the nodes they carry, so they stay underneath
         var types = elements.Select(element => element!["type"]!.GetValue<string>()).ToList();
         Assert.Equal(0, types.IndexOf("rectangle"));
 
-        // decorations stay out of the logical graph: only the four real nodes read back, each knowing its group
         var graph = catalog.Read(path);
         Assert.Equal(4, graph.Nodes.Count);
         Assert.Empty(graph.Labels);
@@ -220,15 +227,16 @@ public class SchemeCreationTests
         Assert.Equal("Backend", byText["API"].Group);
         Assert.Null(byText["DB"].Group);
 
-        // group members stack vertically; the next group sits beside the previous one
         Assert.Equal(byText["App"].X, byText["Watch"].X, 3);
         Assert.True(byText["App"].Y < byText["Watch"].Y);
         Assert.True(byText["App"].X < byText["API"].X);
 
-        // DB follows API into the neighbouring cell — to its right, or on the row below
         Assert.True(byText["DB"].X > byText["API"].X || byText["DB"].Y > byText["API"].Y);
     }
 
+    /// <remarks>
+    /// Consecutive stages stay neighbours: each step is either sideways or one row down.
+    /// </remarks>
     [Fact]
     public void LongChainsFoldIntoAGridInsteadOfOneLongRow()
     {
@@ -249,7 +257,6 @@ public class SchemeCreationTests
         Assert.True(width / height < 3, $"a chain of 8 must not stay a flat ribbon, got {width:F0}x{height:F0}");
         Assert.True(byText["Stage 7"].Y > byText["Stage 0"].Y, "the flow has to wrap onto further rows");
 
-        // consecutive stages stay neighbours: each step is either sideways or one row down
         foreach (var i in chain.Skip(1))
         {
             var previous = byText[$"Stage {i - 1}"];
@@ -261,6 +268,10 @@ public class SchemeCreationTests
         }
     }
 
+    /// <remarks>
+    /// a→c skips B inside the stack and a→far skips the middle column: both leave and enter their blocks sideways, each
+    /// in a lane of its own, clear of every block.
+    /// </remarks>
     [Fact]
     public void EdgesThatWouldCutThroughBlocksTakeTheirOwnLane()
     {
@@ -276,10 +287,10 @@ public class SchemeCreationTests
             ],
             Edges =
             [
-                new EdgeSpec { From = "a", To = "c" },      // skips B inside the stack
+                new EdgeSpec { From = "a", To = "c" },
                 new EdgeSpec { From = "a", To = "mid" },
                 new EdgeSpec { From = "mid", To = "far" },
-                new EdgeSpec { From = "a", To = "far" },     // skips the middle column
+                new EdgeSpec { From = "a", To = "far" },
             ],
         };
         Dictionary<string, string> files = [];
@@ -295,7 +306,6 @@ public class SchemeCreationTests
 
         var graph = catalog.Read(path);
 
-        // both leave and enter their blocks sideways, each in a lane of its own, clear of every block
         var lanes = brackets
             .Select(arrow => arrow!["x"]!.GetValue<double>() + arrow["points"]![1]![0]!.GetValue<double>())
             .ToList();

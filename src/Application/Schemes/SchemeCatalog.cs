@@ -21,9 +21,11 @@ public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer, Sce
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
     };
 
+    /// <summary>Vault-relative paths of the Markdown files the Excalidraw plugin owns.</summary>
     public IReadOnlyList<string> List() =>
         [.. vault.MarkdownFiles().Where(path => Head(vault.Read(path)).Contains(PluginMarker))];
 
+    /// <summary>A scheme as its logical graph.</summary>
     public SchemeGraph Read(string relativePath)
     {
         var document = ExcalidrawCodec.Parse(vault.Read(relativePath));
@@ -33,6 +35,7 @@ public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer, Sce
         return GraphProjection.Project(scene);
     }
 
+    /// <summary>Lays out and writes a scheme; returns its path, with <c>.md</c> added when missing.</summary>
     public string Create(string relativePath, SchemeSpec spec, bool overwrite = false)
     {
         var path = relativePath.EndsWith(".md") ? relativePath : $"{relativePath}.md";
@@ -42,6 +45,7 @@ public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer, Sce
         var composed = composer.Compose(spec);
 
         vault.Write(path, ComposeMarkdown(composed));
+
         return path;
     }
 
@@ -55,6 +59,7 @@ public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer, Sce
         var drafted = drafter.Draft(spec);
 
         vault.Write(path, ComposeMarkdown(drafted));
+
         return (path, drafted.Warnings);
     }
 
@@ -69,6 +74,7 @@ public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer, Sce
         };
 
         var document = ExcalidrawCodec.WithDrawing(empty, composed.Scene.ToJsonString(SceneSerialization));
+
         return ExcalidrawCodec.Serialize(document);
     }
 
@@ -85,6 +91,7 @@ public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer, Sce
             text.Append($"{caption.Text} ^{caption.Id}\n\n");
 
         text.Append("%%\n## Drawing\n");
+
         return text.ToString();
     }
 

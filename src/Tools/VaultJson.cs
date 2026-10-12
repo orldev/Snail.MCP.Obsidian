@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using ModelContextProtocol;
 using Snail.MCP.Vault.Domain;
 
 namespace Snail.MCP.Vault.Tools;
@@ -34,24 +33,7 @@ namespace Snail.MCP.Vault.Tools;
 [JsonSerializable(typeof(VaultStatus))]
 [JsonSerializable(typeof(CreatedScheme))]
 [JsonSerializable(typeof(DrawnScheme))]
-public sealed partial class VaultJson : JsonSerializerContext
-{
-    private static JsonSerializerOptions? s_options;
-
-    /// <summary>The MCP SDK's own options, with these types put first.</summary>
-    /// <remarks>Built on first use: an initializer here could run before the generated <c>Default</c> it reads exists.</remarks>
-    public static JsonSerializerOptions ToolOptions => LazyInitializer.EnsureInitialized(ref s_options, Combined);
-
-    private static JsonSerializerOptions Combined()
-    {
-        var options = new JsonSerializerOptions(McpJsonUtilities.DefaultOptions);
-
-        options.TypeInfoResolverChain.Insert(0, Default);
-        options.MakeReadOnly();
-
-        return options;
-    }
-}
+public sealed partial class VaultJson : JsonSerializerContext;
 
 /// <summary>Where the vault is and how many schemes it holds.</summary>
 public sealed record VaultStatus(string VaultPath, int SchemeCount);

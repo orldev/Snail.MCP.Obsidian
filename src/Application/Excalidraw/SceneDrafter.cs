@@ -13,6 +13,8 @@ public sealed class SceneDrafter(Random? random = null)
 
     private readonly Random _random = random ?? Random.Shared;
 
+    /// <summary>Renders a composed drawing into a scene, with a warning for every overlap.</summary>
+    /// <remarks>Zones go in first: they are the ground everything else stands on.</remarks>
     public ComposedScene Draft(DrawSpec spec)
     {
         Validate(spec);
@@ -22,7 +24,6 @@ public sealed class SceneDrafter(Random? random = null)
         List<SchemeCaption> captions = [];
         Dictionary<string, (JsonObject Element, Rect Rect)> boxes = [];
 
-        // Zones are the ground everything else stands on, so they go in first.
         foreach (var zone in spec.Zones)
         {
             elements.Add((JsonNode)factory.Plate(

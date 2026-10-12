@@ -14,10 +14,7 @@ public sealed class StdioContractTests : IDisposable
 {
     private readonly string _vault = Directory.CreateTempSubdirectory("vault-stdio-tests").FullName;
 
-    private static (string Command, string[] Arguments) Server =>
-        Environment.GetEnvironmentVariable("SNAIL_VAULT_SERVER") is { Length: > 0 } native
-            ? (native, [])
-            : ("dotnet", [Path.Combine(AppContext.BaseDirectory, "Snail.MCP.Vault.dll")]);
+    private static (string Command, string[] Arguments) Server => Snail.Sdk.Mcp.Testing.ServerProgram.Command("Snail.MCP.Vault", "SNAIL_VAULT_SERVER");
 
     public void Dispose() => Directory.Delete(_vault, recursive: true);
 
@@ -37,6 +34,20 @@ public sealed class StdioContractTests : IDisposable
         var tools = await client.ListToolsAsync();
 
         Assert.Equal(["scheme_create", "scheme_draw", "scheme_list", "scheme_read", "vault_status"], tools.Select(tool => tool.Name).Order(StringComparer.Ordinal));
+    }
+
+    /// <summary>
+    /// The guard rules of every Snail server, on the list a model receives: names in snake case and listed once, the tool
+    /// and every parameter described, read-only or destructive stated, every allowed value named, English.
+    /// </summary>
+    [Fact]
+    public async Task Tools_AsListed_KeepTheGuardRules()
+    {
+        await using var client = await StartedAsync();
+
+        var listed = await client.ListToolsAsync();
+
+        Assert.Empty(Snail.Sdk.Mcp.Testing.ToolGuards.Problems(listed.Select(tool => tool.ProtocolTool)));
     }
 
     [Fact]

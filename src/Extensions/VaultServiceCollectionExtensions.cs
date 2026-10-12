@@ -7,8 +7,10 @@ using Snail.MCP.Vault.Configuration;
 
 namespace Snail.MCP.Vault.Extensions;
 
+/// <summary>Registration of everything behind the tools.</summary>
 public static class VaultServiceCollectionExtensions
 {
+    /// <summary>Registers the settings, the vault on disk and the scheme catalog.</summary>
     public static IServiceCollection AddVault(this IServiceCollection services) =>
         services
             .AddSingleton(VaultConfig.Load())

@@ -9,6 +9,7 @@ public static class LzString
 
     private static readonly int[] Base64Values = BuildReverseAlphabet();
 
+    /// <summary>Compresses text into the Base64 form the plugin writes.</summary>
     public static string CompressToBase64(string input)
     {
         var compressed = Compress(input, 6, static value => Base64Alphabet[value]);
@@ -22,6 +23,7 @@ public static class LzString
         };
     }
 
+    /// <summary>Decompresses the Base64 form the plugin writes; empty input gives empty text.</summary>
     public static string DecompressFromBase64(string input)
     {
         if (input.Length == 0)
@@ -101,6 +103,7 @@ public static class LzString
             EmitCode(current);
 
         writer.Write(2, numBits);
+
         return writer.Finish();
     }
 
@@ -121,7 +124,7 @@ public static class LzString
 
         while (true)
         {
-            if (reader.Exhausted)
+            if (reader.IsExhausted)
                 return "";
 
             var code = reader.Read(numBits);
@@ -223,7 +226,7 @@ public static class LzString
         private int _position = resetValue;
         private int _index = 1;
 
-        public bool Exhausted => _index > input.Length;
+        public bool IsExhausted => _index > input.Length;
 
         public int Read(int bitCount)
         {

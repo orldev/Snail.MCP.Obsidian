@@ -147,7 +147,7 @@ internal sealed class ElementFactory(Random random)
         foreach (var offset in offsets)
             points.Add((JsonNode)new JsonArray(offset.X, offset.Y));
 
-        return new JsonObject
+        var arrow = new JsonObject
         {
             ["id"] = NewId(21),
             ["type"] = "arrow",
@@ -182,6 +182,8 @@ internal sealed class ElementFactory(Random random)
             ["endArrowhead"] = Arrowhead(style.EndArrowhead, "arrow"),
             ["elbowed"] = false,
         };
+
+        return arrow;
     }
 
     public static JsonObject Scene(JsonArray elements) =>

@@ -24,6 +24,8 @@ public sealed class SceneComposer(Random? random = null)
 
     private readonly Random _random = random ?? Random.Shared;
 
+    /// <summary>Lays out, styles and binds every node and edge of a specification into a scene.</summary>
+    /// <remarks>Group backdrops go in first: they must sit below the nodes they carry.</remarks>
     public ComposedScene Compose(SchemeSpec spec)
     {
         Validate(spec);
@@ -35,7 +37,6 @@ public sealed class SceneComposer(Random? random = null)
         List<SchemeCaption> captions = [];
         Dictionary<string, JsonObject> shapesByKey = [];
 
-        // Backdrops first: they must sit below the nodes they carry.
         foreach (var container in layout.Containers)
             elements.Add((JsonNode)GroupPlate(factory, container));
 
@@ -112,6 +113,12 @@ public sealed class SceneComposer(Random? random = null)
         string.IsNullOrWhiteSpace(node.Group) ? null : node.Group;
 
     /// <summary>Groups become labeled frame columns; members stack vertically inside their frame.</summary>
+    /// <remarks>
+    /// Stages are packed into a grid rather than one long row: a wide, flat diagram forces every connection into a long
+    /// haul, while a roughly square one keeps them local. An edge between stack members that are not neighbours, or
+    /// between cells the grid did not put side by side, travels in its own vertical lane clear of the blocks, entering
+    /// both ends from the side.
+    /// </remarks>
     private static LayoutPlan PlaceGrouped(SchemeSpec spec)
     {
         var clusterOf = spec.Nodes.ToDictionary(node => node.Key, node => Group(node) ?? $"\n@{node.Key}");
@@ -157,8 +164,6 @@ public sealed class SceneComposer(Random? random = null)
                 : (Width: width + 2 * FramePadding, Height: height + FrameTitleBand + FramePadding);
         });
 
-        // Stages are packed into a grid rather than one long row: a wide, flat diagram forces every
-        // connection into a long haul, while a roughly square one keeps them local.
         var stages = order
             .Select(cell => (
                 Width: cell.Max(cluster => size[cluster].Width),
@@ -233,8 +238,6 @@ public sealed class SceneComposer(Random? random = null)
             }
             else
             {
-                // Everything else — stack members that are not neighbours, and cells the grid did not put side
-                // by side — travels in its own vertical lane clear of the blocks, entering both ends from the side.
                 var onLeft = (from.X + to.X) / 2 < (leftEdge + rightEdge) / 2;
                 var origin = fromCluster == toCluster && onLeft ? plates[fromCluster].X : onLeft ? leftEdge : rightEdge;
                 var lane = onLeft
@@ -318,6 +321,7 @@ public sealed class SceneComposer(Random? random = null)
         }
 
         MinimizeCrossings(order, above, below);
+
         return order;
     }
 
