@@ -44,7 +44,7 @@ On a machine that builds it from this repository, publish it beside the other Sn
 at `current`, which follows every later publication:
 
 ```bash
-dotnet publish src -c Release -r osx-arm64 -p:Install=true
+dotnet publish src -c Release -r osx-arm64 -p:SnailMcpInstall=true
 claude mcp add -s user mem1 -e SNAIL_MCP_VAULT_PATH="/absolute/path/to/Obsidian Vault" -- ~/.s3l-mcp/Snail.MCP.Vault/current/Snail.MCP.Vault
 ```
 

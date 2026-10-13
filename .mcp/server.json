@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
-  "description": "MCP server bridging AI agents and an Obsidian vault: semantic reading and safe programmatic editing of Excalidraw schemes and Markdown notes.",
+  "description": "Reads an Obsidian vault by meaning and edits its Markdown notes and Excalidraw schemes safely.",
   "name": "io.github.orldev/snail-mcp-vault",
   "version": "0.1.0",
   "packages": [
