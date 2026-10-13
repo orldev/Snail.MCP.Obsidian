@@ -45,16 +45,30 @@ at `current`, which follows every later publication:
 
 ```bash
 dotnet publish src -c Release -r osx-arm64 -p:SnailMcpInstall=true
-claude mcp add -s user mem1 -e SNAIL_MCP_VAULT_PATH="/absolute/path/to/Obsidian Vault" -- ~/.s3l-mcp/Snail.MCP.Vault/current/Snail.MCP.Vault
+claude mcp add -s user mem1 -- ~/.s3l-mcp/Snail.MCP.Vault/current/Snail.MCP.Vault
 ```
+
+The vault it serves is named in its settings file (*Configuration* below), not in the registration.
 
 Measured against `dotnet Snail.MCP.Vault.dll` on an Apple Silicon Mac: see *Performance* below.
 
 ## Configuration
 
-| Variable | Required | Description |
-| --- | --- | --- |
-| `SNAIL_MCP_VAULT_PATH` | yes | Absolute path to the Obsidian vault root. |
+The server reads its settings file, then its `SNAIL_MCP_VAULT_` variables, which win over the file. The file is the
+one `SNAIL_MCP_VAULT_CONFIG` names, the only one read when it is set, or else the first that exists of the chain every
+Snail MCP server reads ([Snail.Sdk](https://orldev.github.io/Snail.Sdk/)): `.s3l-mcp-vault.json` or
+`s3l-mcp-vault.json` in the working directory, `~/.config/s3l-mcp-vault/config.json`, `~/.s3l-mcp-vault.json`.
+
+The vault's address is a setting of this machine: it belongs in `~/.config/s3l-mcp-vault/config.json`, readable by you
+alone (`chmod 600`), never in a launchd job or a client's registration, which travel wherever they are copied:
+
+```json
+{ "Path": "/absolute/path/to/Obsidian Vault" }
+```
+
+| Variable | Field in the file | Required | Description |
+| --- | --- | --- | --- |
+| `SNAIL_MCP_VAULT_PATH` | `Path` | yes, in one of the two | Absolute path to the Obsidian vault root. |
 
 ## Developing locally
 
@@ -64,10 +78,7 @@ Measured against `dotnet Snail.MCP.Vault.dll` on an Apple Silicon Mac: see *Perf
     "mem1": {
       "type": "stdio",
       "command": "dotnet",
-      "args": ["run", "--project", "<PATH TO src DIRECTORY>"],
-      "env": {
-        "SNAIL_MCP_VAULT_PATH": "/absolute/path/to/Obsidian Vault"
-      }
+      "args": ["run", "--project", "<PATH TO src DIRECTORY>"]
     }
   }
 }

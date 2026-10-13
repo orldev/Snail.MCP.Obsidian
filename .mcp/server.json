@@ -15,8 +15,8 @@
       "environmentVariables": [
         {
           "name": "SNAIL_MCP_VAULT_PATH",
-          "description": "Absolute path to the Obsidian vault root.",
-          "isRequired": true,
+          "description": "Absolute path to the Obsidian vault root; \"Path\" in ~/.config/s3l-mcp-vault/config.json when not set.",
+          "isRequired": false,
           "format": "filepath"
         }
       ]
