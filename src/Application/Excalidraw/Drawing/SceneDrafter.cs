@@ -1,7 +1,8 @@
 using System.Text.Json.Nodes;
+using Snail.MCP.Vault.Application.Excalidraw.Layout;
 using Snail.MCP.Vault.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw;
+namespace Snail.MCP.Vault.Application.Excalidraw.Drawing;
 
 /// <summary>
 /// Renders a drawing exactly as composed by the caller: no layout of its own. It only does what the caller
@@ -101,6 +102,9 @@ public sealed class SceneDrafter(Random? random = null)
         if (spec.Boxes.Count == 0)
             throw new ArgumentException("A drawing needs at least one box.");
 
+        if (spec.Boxes.Count > SchemeLimits.MostNodes || spec.Arrows.Count > SchemeLimits.MostEdges)
+            throw new ArgumentException($"A drawing takes at most {SchemeLimits.MostNodes} boxes and {SchemeLimits.MostEdges} arrows; split it into several drawings.");
+
         HashSet<string> keys = [];
         foreach (var box in spec.Boxes)
         {
@@ -116,12 +120,14 @@ public sealed class SceneDrafter(Random? random = null)
             StyleRules.ExpectColor(zone.StrokeColor, "strokeColor");
             StyleRules.ExpectColor(zone.TitleColor, "titleColor");
             StyleRules.ExpectStrokeStyle(zone.StrokeStyle);
+            StyleRules.ExpectFontSize(zone.TitleSize, "titleSize");
         }
 
         foreach (var text in spec.Texts)
         {
             StyleRules.ExpectColor(text.Color, "color");
             StyleRules.ExpectFont(text.Font);
+            StyleRules.ExpectFontSize(text.FontSize, "fontSize");
         }
 
         foreach (var arrow in spec.Arrows)
@@ -132,8 +138,8 @@ public sealed class SceneDrafter(Random? random = null)
             if (!keys.Contains(arrow.To))
                 throw new ArgumentException($"Arrow refers to unknown box key '{arrow.To}'.");
 
-            ExpectSide(arrow.FromSide, "fromSide");
-            ExpectSide(arrow.ToSide, "toSide");
+            StyleRules.ExpectSide(arrow.FromSide, "fromSide");
+            StyleRules.ExpectSide(arrow.ToSide, "toSide");
             StyleRules.ValidateEdge(arrow);
 
             foreach (var bend in arrow.Bends)
@@ -142,12 +148,6 @@ public sealed class SceneDrafter(Random? random = null)
                     throw new ArgumentException($"A bend of the arrow '{arrow.From}' → '{arrow.To}' must be a pair [x, y].");
             }
         }
-    }
-
-    private static void ExpectSide(string side, string field)
-    {
-        if (side is not ("auto" or "left" or "right" or "top" or "bottom"))
-            throw new ArgumentException($"Unknown {field} '{side}'; allowed: auto, left, right, top, bottom.");
     }
 
     private static EdgeRoute Route(DrawArrow arrow, Rect from, Rect to)

@@ -1,5 +1,5 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw;
+using Snail.MCP.Vault.Application.Excalidraw.Format;
 using Snail.MCP.Vault.Domain;
 
 namespace Snail.MCP.Vault.Tests.Application.Schemes;
@@ -23,7 +23,7 @@ public class SceneDraftingTests
     /// The zone title and the legend live as free-standing texts.
     /// </remarks>
     [Fact]
-    public void DrawnSceneKeepsTheGivenPlacesAndReadsBack()
+    public void Draw_ComposedDrawing_KeepsItsPlacesAndReadsBack()
     {
         Dictionary<string, string> files = [];
         var catalog = SchemeCatalogTests.Catalog(files);
@@ -51,7 +51,7 @@ public class SceneDraftingTests
     /// API sits to the right of App, so the arrow leaves the right face and enters the left one.
     /// </remarks>
     [Fact]
-    public void ArrowLeavesAndEntersThroughTheFacesFacingEachOther()
+    public void Draw_AutoSides_UseTheFacesFacingEachOther()
     {
         Dictionary<string, string> files = [];
         var catalog = SchemeCatalogTests.Catalog(files);
@@ -66,7 +66,7 @@ public class SceneDraftingTests
     }
 
     [Fact]
-    public void BendsAreFollowedExactly()
+    public void Draw_ArrowWithBends_FollowsThemExactly()
     {
         Dictionary<string, string> files = [];
         var catalog = SchemeCatalogTests.Catalog(files);
@@ -90,7 +90,7 @@ public class SceneDraftingTests
     }
 
     [Fact]
-    public void OverlappingBlocksAreReportedButStillDrawn()
+    public void Draw_OverlappingBoxes_AreDrawnAndReported()
     {
         Dictionary<string, string> files = [];
         var catalog = SchemeCatalogTests.Catalog(files);
@@ -107,7 +107,7 @@ public class SceneDraftingTests
     }
 
     [Fact]
-    public void RefusesArrowsToUnknownBoxes()
+    public void Draw_ArrowToUnknownBox_IsRefused()
     {
         var catalog = SchemeCatalogTests.Catalog([]);
         var broken = Spec with { Arrows = [new DrawArrow { From = "app", To = "missing" }] };

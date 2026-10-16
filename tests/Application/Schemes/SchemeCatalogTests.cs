@@ -1,4 +1,5 @@
-using Snail.MCP.Vault.Application.Excalidraw;
+using Snail.MCP.Vault.Application.Excalidraw.Drawing;
+using Snail.MCP.Vault.Application.Excalidraw.Format;
 using Snail.MCP.Vault.Application.Ports;
 using Snail.MCP.Vault.Application.Schemes;
 
@@ -9,7 +10,7 @@ public class SchemeCatalogTests
     private const string SceneJson = """{"type":"excalidraw","version":2,"elements":[{"id":"a1","type":"rectangle","x":0,"y":0,"width":10,"height":10,"isDeleted":false}]}""";
 
     [Fact]
-    public void ListReturnsOnlyExcalidrawFiles()
+    public void List_MixedNotes_GivesOnlyExcalidrawFiles()
     {
         var catalog = Catalog(new()
         {
@@ -21,7 +22,7 @@ public class SchemeCatalogTests
     }
 
     [Fact]
-    public void ReadProjectsSchemeIntoGraph()
+    public void Read_SchemeFile_GivesItsGraph()
     {
         var catalog = Catalog(new() { ["Scheme.md"] = SchemeFile() });
 
@@ -42,8 +43,19 @@ public class SchemeCatalogTests
 
         public string Read(string relativePath) => files[relativePath];
 
+        public string? ReadHead(string relativePath) =>
+            files.TryGetValue(relativePath, out var content) ? content[..Math.Min(512, content.Length)] : null;
+
         public bool Exists(string relativePath) => files.ContainsKey(relativePath);
 
-        public void Write(string relativePath, string content) => files[relativePath] = content;
+        public bool TryWrite(string relativePath, string content, bool overwrite)
+        {
+            if (!overwrite && files.ContainsKey(relativePath))
+                return false;
+
+            files[relativePath] = content;
+
+            return true;
+        }
     }
 }

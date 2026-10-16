@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw;
+using Snail.MCP.Vault.Application.Excalidraw.Format;
+using Snail.MCP.Vault.Application.Excalidraw.Reading;
 
 namespace Snail.MCP.Vault.Tests.Application.Excalidraw;
 
@@ -7,7 +8,7 @@ public class RealVaultProjectionTests
 {
     [Theory]
     [MemberData(nameof(RealVaultParityTests.SchemeFiles), MemberType = typeof(RealVaultParityTests))]
-    public void ProjectsEveryRealSchemeIntoNonEmptyGraph(string file)
+    public void Project_RealSchemeFile_GivesANonEmptyGraph(string file)
     {
         if (file.Length == 0)
             return;
@@ -22,7 +23,7 @@ public class RealVaultProjectionTests
 
     [Theory]
     [MemberData(nameof(RealVaultParityTests.SchemeFiles), MemberType = typeof(RealVaultParityTests))]
-    public void EveryBoundEdgeEndpointResolvesToARealElement(string file)
+    public void Project_RealSchemeFile_BindsEdgesToRealElements(string file)
     {
         if (file.Length == 0)
             return;

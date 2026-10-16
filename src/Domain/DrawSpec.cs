@@ -34,9 +34,11 @@ public sealed record DrawZone
     public required double Y { get; init; }
 
     /// <summary>Width in canvas units.</summary>
+    [Description("Width in canvas units.")]
     public required double Width { get; init; }
 
     /// <summary>Height in canvas units.</summary>
+    [Description("Height in canvas units.")]
     public required double Height { get; init; }
 
     /// <summary>Caption drawn inside the top-left corner. Empty for a bare area.</summary>
@@ -59,8 +61,8 @@ public sealed record DrawZone
     [Description("Title color as hex. Default #868e96.")]
     public string? TitleColor { get; init; }
 
-    /// <summary>Title size in px. Default 20.</summary>
-    [Description("Title size in px. Default 20.")]
+    /// <summary>Title size in px, 8 to 120. Default 20.</summary>
+    [Description("Title size in px, 8 to 120. Default 20.")]
     public int? TitleSize { get; init; }
 }
 
@@ -119,8 +121,8 @@ public sealed record DrawBox : INodeStyle
     [Description("Caption color as hex. Default #1e1e1e.")]
     public string? TextColor { get; init; }
 
-    /// <summary>Caption size in px. Default 20.</summary>
-    [Description("Caption size in px. Default 20.")]
+    /// <summary>Caption size in px, 8 to 120. Default 20.</summary>
+    [Description("Caption size in px, 8 to 120. Default 20.")]
     public int? FontSize { get; init; }
 
     /// <summary>Caption font: excalifont (default, hand-drawn), nunito, lilita, comic, virgil, helvetica or cascadia.</summary>
@@ -132,6 +134,7 @@ public sealed record DrawBox : INodeStyle
 public sealed record DrawText
 {
     /// <summary>The text to draw.</summary>
+    [Description("The text to draw; use \\n for multiple lines.")]
     public required string Text { get; init; }
 
     /// <summary>Left edge in canvas units.</summary>
@@ -142,8 +145,8 @@ public sealed record DrawText
     [Description("Top edge in canvas units.")]
     public required double Y { get; init; }
 
-    /// <summary>Size in px. Default 20.</summary>
-    [Description("Size in px. Default 20.")]
+    /// <summary>Size in px, 8 to 120. Default 20.</summary>
+    [Description("Size in px, 8 to 120. Default 20.")]
     public int? FontSize { get; init; }
 
     /// <summary>Color as hex. Default #1e1e1e.</summary>

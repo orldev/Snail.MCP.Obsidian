@@ -1,7 +1,7 @@
 using System.Text;
 using Snail.MCP.Vault.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw;
+namespace Snail.MCP.Vault.Application.Excalidraw.Format;
 
 /// <summary>Splits an Excalidraw markdown file into byte-exact segments and converts the drawing payload between its stored form and plain JSON.</summary>
 public static class ExcalidrawCodec
@@ -109,6 +109,21 @@ public static class ExcalidrawCodec
         }
     }
 
-    private static string StripLineBreaks(string value) =>
-        value.Replace("\n", "").Replace("\r", "");
+    /// <remarks>One pass and one string: two replacements made two copies of the whole payload.</remarks>
+    private static string StripLineBreaks(string value)
+    {
+        var breaks = value.AsSpan().Count('\n') + value.AsSpan().Count('\r');
+        if (breaks == 0)
+            return value;
+
+        return string.Create(value.Length - breaks, value, static (stripped, source) =>
+        {
+            var length = 0;
+            foreach (var character in source)
+            {
+                if (character is not ('\n' or '\r'))
+                    stripped[length++] = character;
+            }
+        });
+    }
 }

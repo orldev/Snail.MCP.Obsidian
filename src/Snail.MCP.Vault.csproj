@@ -5,9 +5,6 @@
         Native AOT, a native dotnet tool package for each platform with a framework-dependent one for the rest. The
         vault is files only, so Windows is among them.
     -->
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-    </PropertyGroup>
 
     <PropertyGroup>
         <PackageVersion>0.1.0</PackageVersion>

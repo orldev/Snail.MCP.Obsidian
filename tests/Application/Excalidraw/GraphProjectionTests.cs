@@ -1,12 +1,12 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw;
+using Snail.MCP.Vault.Application.Excalidraw.Reading;
 
 namespace Snail.MCP.Vault.Tests.Application.Excalidraw;
 
 public class GraphProjectionTests
 {
     [Fact]
-    public void ProjectsShapesWithBoundCaptionsAsNodes()
+    public void Project_ShapeWithBoundCaption_IsANodeWithItsText()
     {
         var graph = GraphProjection.Project(Scene());
 
@@ -17,7 +17,26 @@ public class GraphProjectionTests
     }
 
     [Fact]
-    public void ProjectsBoundArrowsAsDirectedEdges()
+    public void Project_ForeignElements_KeepsTheNodesAroundThem()
+    {
+        var scene = JsonNode.Parse("""
+            {"elements":[
+              {"id":"a","type":"rectangle","x":0,"y":0,"width":10,"height":10},
+              42,
+              {"id":"x","type":7},
+              {"id":"y","type":"rectangle","isDeleted":"false","customData":"plain"},
+              {"id":"z","type":"arrow","startBinding":"a"}
+            ]}
+            """)!;
+
+        var graph = GraphProjection.Project(scene);
+
+        Assert.Equal(["a", "y"], graph.Nodes.Select(node => node.Id));
+        Assert.Null(Assert.Single(graph.Edges).FromId);
+    }
+
+    [Fact]
+    public void Project_BoundArrow_IsADirectedEdge()
     {
         var graph = GraphProjection.Project(Scene());
 
@@ -28,7 +47,7 @@ public class GraphProjectionTests
     }
 
     [Fact]
-    public void ProjectsFreeTextAsLabels()
+    public void Project_FreeText_IsALabel()
     {
         var graph = GraphProjection.Project(Scene());
 
@@ -37,7 +56,7 @@ public class GraphProjectionTests
     }
 
     [Fact]
-    public void SkipsDeletedElements()
+    public void Project_DeletedElement_IsLeftOut()
     {
         var graph = GraphProjection.Project(Scene());
 
@@ -45,7 +64,7 @@ public class GraphProjectionTests
     }
 
     [Fact]
-    public void CaptionTextIsNotDuplicatedAsLabel()
+    public void Project_BoundCaption_IsNotAlsoALabel()
     {
         var graph = GraphProjection.Project(Scene());
 

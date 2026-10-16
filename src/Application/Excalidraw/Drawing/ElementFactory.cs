@@ -1,7 +1,8 @@
 using System.Text.Json.Nodes;
+using Snail.MCP.Vault.Application.Excalidraw.Layout;
 using Snail.MCP.Vault.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw;
+namespace Snail.MCP.Vault.Application.Excalidraw.Drawing;
 
 /// <summary>
 /// Builds the raw Excalidraw elements — every field the plugin expects, ids, seeds and fractional indices
@@ -210,10 +211,10 @@ internal sealed class ElementFactory(Random random)
     public static string Id(JsonObject element) => element["id"]!.GetValue<string>();
 
     public static double TextWidth(string text, int fontSize) =>
-        text.Split('\n').Max(line => line.Length) * fontSize * 0.55;
+        text.Split('\n').Max(line => line.Length) * (double)fontSize * 0.55;
 
     public static double TextHeight(string text, int fontSize) =>
-        text.Split('\n').Length * fontSize * LineHeight;
+        text.Split('\n').Length * (double)fontSize * LineHeight;
 
     private JsonObject Text(string text, string color, int fontSize, int fontFamily) =>
         new()
@@ -299,14 +300,29 @@ internal sealed class ElementFactory(Random random)
     private string NewId(int length) =>
         string.Concat(Enumerable.Range(0, length).Select(_ => IdAlphabet[random.Next(IdAlphabet.Length)]));
 
+    /// <remarks>
+    /// A fractional index is a head letter saying how many digits follow — "a" one, "b" two, "c" three — and then the
+    /// digits, so each index sorts after the one before. The form that stopped at "b" failed past element 3 906.
+    /// </remarks>
     private string NextIndex()
     {
         var position = _index++;
-        if (position < IndexDigits.Length)
-            return $"a{IndexDigits[position]}";
+        var width = 1;
+        var capacity = IndexDigits.Length;
+        while (position >= capacity)
+        {
+            position -= capacity;
+            width++;
+            capacity *= IndexDigits.Length;
+        }
 
-        var rest = position - IndexDigits.Length;
+        Span<char> digits = stackalloc char[width];
+        for (var place = width - 1; place >= 0; place--)
+        {
+            digits[place] = IndexDigits[position % IndexDigits.Length];
+            position /= IndexDigits.Length;
+        }
 
-        return $"b{IndexDigits[rest / IndexDigits.Length]}{IndexDigits[rest % IndexDigits.Length]}";
+        return $"{(char)('a' + width - 1)}{new string(digits)}";
     }
 }

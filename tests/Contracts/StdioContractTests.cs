@@ -1,6 +1,8 @@
 using System.Text.Json.Nodes;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
+using Snail.MCP.Vault.Tests.Support;
+using Snail.Sdk.Mcp.Testing;
 
 namespace Snail.MCP.Vault.Tests.Contracts;
 
@@ -12,22 +14,15 @@ namespace Snail.MCP.Vault.Tests.Contracts;
 /// </remarks>
 public sealed class StdioContractTests : IDisposable
 {
-    private readonly string _vault = Directory.CreateTempSubdirectory("vault-stdio-tests").FullName;
-
-    private static (string Command, string[] Arguments) Server => Snail.Sdk.Mcp.Testing.ServerProgram.Command("Snail.MCP.Vault", "SNAIL_VAULT_SERVER");
+    private readonly string _vault = TestFolders.Create("vault-stdio-tests");
 
     public void Dispose() => Directory.Delete(_vault, recursive: true);
 
-    private Task<McpClient> StartedAsync() =>
-        McpClient.CreateAsync(new StdioClientTransport(new StdioClientTransportOptions
-        {
-            Command = Server.Command,
-            Arguments = Server.Arguments,
-            EnvironmentVariables = new Dictionary<string, string?> { ["SNAIL_MCP_VAULT_PATH"] = _vault, ["SNAIL_MCP_VAULT_CONFIG"] = Snail.Sdk.Mcp.Testing.ServerProgram.NoSettingsFile }
-        }));
+    private Task<McpClient> StartedAsync(Dictionary<string, string?>? variables = null) =>
+        ServerProgram.StartAsync("Snail.MCP.Vault", "SNAIL_VAULT_SERVER", variables ?? new() { ["SNAIL_MCP_VAULT_PATH"] = _vault });
 
     [Fact]
-    public async Task ServerListsItsToolsAsAProgram()
+    public async Task ListTools_AsAProgram_NamesEveryTool()
     {
         await using var client = await StartedAsync();
 
@@ -56,14 +51,14 @@ public sealed class StdioContractTests : IDisposable
 
         var listed = await client.ListToolsAsync();
 
-        Assert.Empty(Snail.Sdk.Mcp.Testing.ToolGuards.Problems(listed.Select(tool => tool.ProtocolTool)));
+        Assert.Empty(ToolGuards.Problems(listed.Select(tool => tool.ProtocolTool)));
     }
 
     /// <summary>A vault named only by the settings file, the file named by <c>SNAIL_MCP_VAULT_CONFIG</c>, is the server's.</summary>
     [Fact]
     public async Task Vault_FromTheSettingsFile_IsServed()
     {
-        var settings = Directory.CreateTempSubdirectory("vault-settings-tests").FullName;
+        var settings = TestFolders.Create("vault-settings-tests");
 
         try
         {
@@ -71,12 +66,7 @@ public sealed class StdioContractTests : IDisposable
 
             await File.WriteAllTextAsync(file, new JsonObject { ["Path"] = _vault }.ToJsonString());
 
-            await using var client = await McpClient.CreateAsync(new StdioClientTransport(new StdioClientTransportOptions
-            {
-                Command = Server.Command,
-                Arguments = Server.Arguments,
-                EnvironmentVariables = new Dictionary<string, string?> { ["SNAIL_MCP_VAULT_CONFIG"] = file, ["SNAIL_MCP_VAULT_PATH"] = null }
-            }));
+            await using var client = await StartedAsync(new() { ["SNAIL_MCP_VAULT_CONFIG"] = file, ["SNAIL_MCP_VAULT_PATH"] = null });
 
             var status = await CalledAsync(client, "vault_status", []);
 
@@ -89,7 +79,7 @@ public sealed class StdioContractTests : IDisposable
     }
 
     [Fact]
-    public async Task EveryToolTakesItsArgumentsAndAnswers()
+    public async Task CallTool_EveryTool_TakesItsArgumentsAndAnswers()
     {
         await using var client = await StartedAsync();
 

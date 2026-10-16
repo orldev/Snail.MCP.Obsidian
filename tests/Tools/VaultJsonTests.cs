@@ -8,7 +8,7 @@ namespace Snail.MCP.Vault.Tests.Tools;
 public class VaultJsonTests
 {
     [Fact]
-    public void ArrowWithoutSidesOrLabelKeepsItsDefaults()
+    public void Deserialize_ArrowWithoutSidesOrLabel_KeepsItsDefaults()
     {
         var arrow = JsonSerializer.Deserialize<IReadOnlyList<DrawArrow>>("""[{"from":"x","to":"y"}]""", Snail.Sdk.Mcp.Hosting.ToolJson.Options(VaultJson.Default))![0];
 
@@ -19,7 +19,7 @@ public class VaultJsonTests
     }
 
     [Fact]
-    public void NodeAndBoxWithoutShapeAreRectangles()
+    public void Deserialize_NodeAndBoxWithoutShape_AreRectangles()
     {
         var node = JsonSerializer.Deserialize<IReadOnlyList<NodeSpec>>("""[{"key":"a","text":"A"}]""", Snail.Sdk.Mcp.Hosting.ToolJson.Options(VaultJson.Default))![0];
         var box = JsonSerializer.Deserialize<IReadOnlyList<DrawBox>>("""[{"key":"a","text":"A","x":0,"y":0}]""", Snail.Sdk.Mcp.Hosting.ToolJson.Options(VaultJson.Default))![0];

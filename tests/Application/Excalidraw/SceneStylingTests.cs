@@ -1,5 +1,5 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw;
+using Snail.MCP.Vault.Application.Excalidraw.Drawing;
 using Snail.MCP.Vault.Domain;
 
 namespace Snail.MCP.Vault.Tests.Application.Excalidraw;
@@ -7,7 +7,7 @@ namespace Snail.MCP.Vault.Tests.Application.Excalidraw;
 public class SceneStylingTests
 {
     [Fact]
-    public void AppliesNodeStylingToShapeAndCaption()
+    public void Compose_StyledNode_StylesShapeAndCaption()
     {
         var scene = Compose(new SchemeSpec
         {
@@ -45,7 +45,7 @@ public class SceneStylingTests
     }
 
     [Fact]
-    public void AppliesEdgeStylingAndArrowheads()
+    public void Compose_StyledEdge_StylesArrowAndHeads()
     {
         var scene = Compose(new SchemeSpec
         {
@@ -72,7 +72,7 @@ public class SceneStylingTests
     }
 
     [Fact]
-    public void ArrowheadNoneTurnsIntoNull()
+    public void Compose_ArrowheadNone_IsWrittenAsNull()
     {
         var scene = Compose(new SchemeSpec
         {
@@ -89,7 +89,7 @@ public class SceneStylingTests
     [InlineData("strokeStyle", "wavy")]
     [InlineData("font", "arial")]
     [InlineData("strokeColor", "red")]
-    public void RejectsUnknownStyleValues(string field, string value)
+    public void Compose_UnknownStyleValue_IsRefused(string field, string value)
     {
         var node = new NodeSpec
         {

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Snail.MCP.Vault.Adapters.FileSystem;
-using Snail.MCP.Vault.Application.Excalidraw;
+using Snail.MCP.Vault.Application.Excalidraw.Drawing;
 using Snail.MCP.Vault.Application.Ports;
 using Snail.MCP.Vault.Application.Schemes;
 using Snail.MCP.Vault.Configuration;

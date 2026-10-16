@@ -30,6 +30,12 @@ Both write the same plugin-valid file and both take `overwrite=true` to redraw a
 
 **Automatic layout** stacks nodes that share a `group` on a labeled backdrop, packs the groups into a grid close to a landscape shape (a row runs left to right, the next one right to left, so consecutive stages stay neighbours), and routes connections along that grid.
 
+**Limits.** A scheme takes at most 500 nodes (boxes) and 2000 edges (arrows); text sizes run from 8 to 120 px; without
+groups, the columns all edges skip add up to at most 20000. Within them the slowest layout measured takes about 2 s; a
+request beyond them is refused with a message saying what to change — the agent sees every refusal's text, not a
+generic error. A new path is claimed atomically, so of two calls racing for it one is refused, and a drawing is
+written whole or not at all.
+
 ## Install
 
 A native program on macOS, Linux and Windows, a framework-dependent one elsewhere — `dotnet tool` picks the package of

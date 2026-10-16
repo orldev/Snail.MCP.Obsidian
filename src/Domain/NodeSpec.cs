@@ -45,8 +45,8 @@ public sealed record NodeSpec : INodeStyle
     [Description("Caption color as hex. Default #1e1e1e.")]
     public string? TextColor { get; init; }
 
-    /// <summary>Caption font size in px. Default 20.</summary>
-    [Description("Caption font size in px. Default 20.")]
+    /// <summary>Caption font size in px, 8 to 120. Default 20.</summary>
+    [Description("Caption font size in px, 8 to 120. Default 20.")]
     public int? FontSize { get; init; }
 
     /// <summary>Caption font: excalifont (default, hand-drawn), nunito, lilita, comic, virgil, helvetica or cascadia.</summary>

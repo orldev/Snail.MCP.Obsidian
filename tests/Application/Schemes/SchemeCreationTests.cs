@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw;
+using Snail.MCP.Vault.Application;
+using Snail.MCP.Vault.Application.Excalidraw.Format;
 using Snail.MCP.Vault.Domain;
 
 namespace Snail.MCP.Vault.Tests.Application.Schemes;
@@ -22,7 +23,7 @@ public class SchemeCreationTests
     };
 
     [Fact]
-    public void CreatedSchemeReadsBackAsTheSameGraph()
+    public void Create_Scheme_ReadsBackAsTheSameGraph()
     {
         Dictionary<string, string> files = [];
         var catalog = SchemeCatalogTests.Catalog(files);
@@ -40,7 +41,7 @@ public class SchemeCreationTests
     }
 
     [Fact]
-    public void CreatedFileIsDiscoverableAndByteStable()
+    public void Create_Scheme_IsListedAndByteStable()
     {
         Dictionary<string, string> files = [];
         var catalog = SchemeCatalogTests.Catalog(files);
@@ -52,7 +53,7 @@ public class SchemeCreationTests
     }
 
     [Fact]
-    public void CaptionsLandInTextElementsSection()
+    public void Create_Scheme_ListsCaptionsInTextElements()
     {
         Dictionary<string, string> files = [];
         var catalog = SchemeCatalogTests.Catalog(files);
@@ -64,7 +65,7 @@ public class SchemeCreationTests
     }
 
     [Fact]
-    public void EdgesArrangeNodesIntoOrderedColumns()
+    public void Create_EdgesWithoutGroups_ArrangeNodesIntoOrderedColumns()
     {
         Dictionary<string, string> files = [];
         var catalog = SchemeCatalogTests.Catalog(files);
@@ -77,15 +78,23 @@ public class SchemeCreationTests
     }
 
     [Fact]
-    public void RefusesToOverwriteAnExistingFile()
+    public void Create_ExistingPathWithoutOverwrite_IsRefused()
     {
         var catalog = SchemeCatalogTests.Catalog(new() { ["Demo.md"] = "existing" });
 
-        Assert.Throws<InvalidOperationException>(() => catalog.Create("Demo", Spec));
+        Assert.Throws<VaultRefusal>(() => catalog.Create("Demo", Spec));
     }
 
     [Fact]
-    public void OverwriteRedrawsAnExistingFileInPlace()
+    public void Create_SuffixInCapitals_KeepsThePath()
+    {
+        var catalog = SchemeCatalogTests.Catalog([]);
+
+        Assert.Equal("Excalidraw/Demo.MD", catalog.Create("Excalidraw/Demo.MD", Spec));
+    }
+
+    [Fact]
+    public void Create_ExistingPathWithOverwrite_RedrawsInPlace()
     {
         Dictionary<string, string> files = [];
         var catalog = SchemeCatalogTests.Catalog(files);
@@ -106,7 +115,7 @@ public class SchemeCreationTests
     /// In the second column D follows its source A to the top, C follows B down — no crossing remains.
     /// </remarks>
     [Fact]
-    public void CrossingEdgesReorderRowsWithinAColumn()
+    public void Create_CrossingEdges_ReorderRowsWithinAColumn()
     {
         var crossing = new SchemeSpec
         {
@@ -136,7 +145,7 @@ public class SchemeCreationTests
     /// a→c bends around column B through a waypoint; c→a leaves as a square bracket under the diagram.
     /// </remarks>
     [Fact]
-    public void LongAndBackwardEdgesRouteAroundNodes()
+    public void Create_LongAndBackwardEdges_RouteAroundNodes()
     {
         var chained = new SchemeSpec
         {
@@ -179,7 +188,7 @@ public class SchemeCreationTests
     /// beside the previous one. DB follows API into the neighbouring cell — to its right, or on the row below.
     /// </remarks>
     [Fact]
-    public void GroupedNodesLandInsideLabeledFrames()
+    public void Create_GroupedNodes_LandInsideLabeledFrames()
     {
         var grouped = new SchemeSpec
         {
@@ -238,7 +247,7 @@ public class SchemeCreationTests
     /// Consecutive stages stay neighbours: each step is either sideways or one row down.
     /// </remarks>
     [Fact]
-    public void LongChainsFoldIntoAGridInsteadOfOneLongRow()
+    public void Create_LongChainOfGroups_FoldsIntoAGrid()
     {
         var chain = Enumerable.Range(0, 8).ToList();
         var spec = new SchemeSpec
@@ -273,7 +282,7 @@ public class SchemeCreationTests
     /// in a lane of its own, clear of every block.
     /// </remarks>
     [Fact]
-    public void EdgesThatWouldCutThroughBlocksTakeTheirOwnLane()
+    public void Create_EdgeAcrossBlocks_TakesItsOwnLane()
     {
         var spec = new SchemeSpec
         {
@@ -315,7 +324,7 @@ public class SchemeCreationTests
     }
 
     [Fact]
-    public void RefusesEdgesToUnknownNodes()
+    public void Create_EdgeToUnknownNode_IsRefused()
     {
         var catalog = SchemeCatalogTests.Catalog([]);
         var broken = new SchemeSpec

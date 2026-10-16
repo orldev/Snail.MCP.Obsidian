@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Application.Excalidraw;
+namespace Snail.MCP.Vault.Application.Excalidraw.Format;
 
 /// <summary>
 /// Marks the decorations this server draws around a scheme — group backdrops and their titles — so that

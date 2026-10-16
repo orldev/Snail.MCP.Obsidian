@@ -1,7 +1,8 @@
 using System.Text.Json.Nodes;
+using Snail.MCP.Vault.Application.Excalidraw.Format;
 using Snail.MCP.Vault.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw;
+namespace Snail.MCP.Vault.Application.Excalidraw.Reading;
 
 /// <summary>Projects a raw Excalidraw scene into the logical graph of nodes, edges and labels.</summary>
 public static class GraphProjection
@@ -21,7 +22,7 @@ public static class GraphProjection
 
         foreach (var element in elements)
         {
-            var type = element["type"]?.GetValue<string>() ?? "";
+            var type = Text(element["type"]) ?? "";
             if (Marker(element) is not null)
                 continue;
 
@@ -37,12 +38,12 @@ public static class GraphProjection
     }
 
     /// <summary>Group backdrops this server drew, as (name, rectangle) — the source of each node's group.</summary>
-    private static List<(string Name, double X, double Y, double Width, double Height)> GroupPlates(List<JsonNode> elements)
+    private static List<(string Name, double X, double Y, double Width, double Height)> GroupPlates(List<JsonObject> elements)
     {
         List<(string, double, double, double, double)> plates = [];
         foreach (var element in elements)
         {
-            if (Marker(element) is not { } marker || Text(marker["role"]) != SceneMarkers.GroupPlate)
+            if (Marker(element) is not JsonObject marker || Text(marker["role"]) != SceneMarkers.GroupPlate)
                 continue;
 
             plates.Add((Text(marker["group"]) ?? "", Number(element["x"]), Number(element["y"]),
@@ -52,21 +53,29 @@ public static class GraphProjection
         return plates;
     }
 
-    private static JsonNode? Marker(JsonNode element) => element["customData"]?[SceneMarkers.Namespace];
+    private static JsonNode? Marker(JsonObject element) => Field(element["customData"], SceneMarkers.Namespace);
 
-    private static List<JsonNode> LivingElements(JsonNode scene)
+    /// <summary>The elements not deleted.</summary>
+    /// <remarks>
+    /// Every field is read by its kind and an element that is not an object is skipped: one element another tool wrote
+    /// with a field of an unexpected kind made the whole scheme unreadable.
+    /// </remarks>
+    private static List<JsonObject> LivingElements(JsonNode scene)
     {
-        List<JsonNode> elements = [];
-        foreach (var element in scene["elements"]?.AsArray() ?? [])
+        List<JsonObject> elements = [];
+        if (Field(scene, "elements") is not JsonArray all)
+            return elements;
+
+        foreach (var element in all)
         {
-            if (element is not null && element["isDeleted"]?.GetValue<bool>() != true)
-                elements.Add(element);
+            if (element is JsonObject living && Flag(living["isDeleted"]) != true)
+                elements.Add(living);
         }
 
         return elements;
     }
 
-    private static Dictionary<string, string> CaptionsByContainer(List<JsonNode> elements)
+    private static Dictionary<string, string> CaptionsByContainer(List<JsonObject> elements)
     {
         Dictionary<string, string> captions = [];
         foreach (var element in elements)
@@ -82,7 +91,7 @@ public static class GraphProjection
     }
 
     private static SchemeNode ToNode(
-        JsonNode element,
+        JsonObject element,
         string shape,
         Dictionary<string, string> captions,
         List<(string Name, double X, double Y, double Width, double Height)> plates)
@@ -106,20 +115,20 @@ public static class GraphProjection
         };
     }
 
-    private static SchemeEdge ToEdge(JsonNode element, Dictionary<string, string> captions)
+    private static SchemeEdge ToEdge(JsonObject element, Dictionary<string, string> captions)
     {
         var id = Text(element["id"]) ?? "";
 
         return new SchemeEdge
         {
             Id = id,
-            FromId = Text(element["startBinding"]?["elementId"]),
-            ToId = Text(element["endBinding"]?["elementId"]),
+            FromId = Text(Field(element["startBinding"], "elementId")),
+            ToId = Text(Field(element["endBinding"], "elementId")),
             Label = captions.GetValueOrDefault(id, ""),
         };
     }
 
-    private static SchemeLabel ToLabel(JsonNode element) =>
+    private static SchemeLabel ToLabel(JsonObject element) =>
         new()
         {
             Id = Text(element["id"]) ?? "",
@@ -127,6 +136,12 @@ public static class GraphProjection
             X = Number(element["x"]),
             Y = Number(element["y"]),
         };
+
+    private static JsonNode? Field(JsonNode? node, string name) =>
+        node is JsonObject owner ? owner[name] : null;
+
+    private static bool? Flag(JsonNode? node) =>
+        node is JsonValue value && value.TryGetValue<bool>(out var flag) ? flag : null;
 
     private static string? Text(JsonNode? node) =>
         node is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;

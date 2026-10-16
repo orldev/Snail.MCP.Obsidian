@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Snail.MCP.Vault.Application.Excalidraw;
+using Snail.MCP.Vault.Application.Excalidraw.Format;
 
 namespace Snail.MCP.Vault.Tests.Application.Excalidraw;
 
@@ -30,7 +30,7 @@ public class RealVaultParityTests
 
     [Theory]
     [MemberData(nameof(SchemeFiles))]
-    public void SerializeReproducesRealFileByteExact(string file)
+    public void Serialize_RealSchemeFile_ReproducesItByteExact(string file)
     {
         if (file.Length == 0)
             return;
@@ -42,7 +42,7 @@ public class RealVaultParityTests
 
     [Theory]
     [MemberData(nameof(SchemeFiles))]
-    public void DecodedDrawingIsValidExcalidrawScene(string file)
+    public void DecodeDrawing_RealSchemeFile_IsAnExcalidrawScene(string file)
     {
         if (file.Length == 0)
             return;
@@ -57,7 +57,7 @@ public class RealVaultParityTests
 
     [Theory]
     [MemberData(nameof(SchemeFiles))]
-    public void ReencodingUnchangedSceneMatchesPluginBytes(string file)
+    public void WithDrawing_UnchangedRealScene_MatchesThePluginBytes(string file)
     {
         if (file.Length == 0)
             return;

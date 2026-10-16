@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace Snail.MCP.Vault.Application.Excalidraw;
+namespace Snail.MCP.Vault.Application.Excalidraw.Drawing;
 
 /// <summary>A freshly composed scene together with the caption texts that go into the Text Elements section.</summary>
 public sealed record ComposedScene

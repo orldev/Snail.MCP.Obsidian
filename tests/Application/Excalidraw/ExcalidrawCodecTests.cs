@@ -1,4 +1,4 @@
-using Snail.MCP.Vault.Application.Excalidraw;
+using Snail.MCP.Vault.Application.Excalidraw.Format;
 using Snail.MCP.Vault.Domain;
 
 namespace Snail.MCP.Vault.Tests.Application.Excalidraw;
@@ -8,7 +8,7 @@ public class ExcalidrawCodecTests
     private const string SceneJson = """{"type":"excalidraw","version":2,"elements":[{"id":"a1","type":"rectangle","x":0,"y":0}]}""";
 
     [Fact]
-    public void ParseDetectsCompressedFormat()
+    public void Parse_CompressedBlock_DetectsCompressedFormat()
     {
         var document = ExcalidrawCodec.Parse(CompressedFile(SceneJson));
 
@@ -18,7 +18,7 @@ public class ExcalidrawCodecTests
     }
 
     [Fact]
-    public void ParseDetectsPlainJsonFormat()
+    public void Parse_JsonBlock_DetectsJsonFormat()
     {
         var document = ExcalidrawCodec.Parse(PlainJsonFile(SceneJson));
 
@@ -28,7 +28,7 @@ public class ExcalidrawCodecTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void SerializeReproducesInputByteExact(bool compressed)
+    public void Serialize_ParsedFile_ReproducesItByteExact(bool compressed)
     {
         var file = compressed ? CompressedFile(SceneJson) : PlainJsonFile(SceneJson);
 
@@ -36,7 +36,7 @@ public class ExcalidrawCodecTests
     }
 
     [Fact]
-    public void DecodeDrawingReturnsOriginalJson()
+    public void DecodeDrawing_CompressedPayload_GivesTheOriginalJson()
     {
         var document = ExcalidrawCodec.Parse(CompressedFile(SceneJson));
 
@@ -44,7 +44,7 @@ public class ExcalidrawCodecTests
     }
 
     [Fact]
-    public void WithDrawingRoundTripsThroughEncoding()
+    public void WithDrawing_NewScene_DecodesBackToIt()
     {
         var document = ExcalidrawCodec.Parse(CompressedFile(SceneJson));
         var updated = """{"type":"excalidraw","version":2,"elements":[]}""";
@@ -57,7 +57,7 @@ public class ExcalidrawCodecTests
     }
 
     [Fact]
-    public void WithDrawingWrapsCompressedPayloadInSpacedLines()
+    public void WithDrawing_CompressedFormat_WrapsPayloadInSpacedLines()
     {
         var bigScene = $$"""{"type":"excalidraw","elements":[{{string.Join(",", Enumerable.Range(0, 300).Select(i => $$"""{"id":"node{{i}}","x":{{i * 10}}}"""))}}]}""";
         var document = ExcalidrawCodec.WithDrawing(ExcalidrawCodec.Parse(CompressedFile(SceneJson)), bigScene);
@@ -70,7 +70,7 @@ public class ExcalidrawCodecTests
     }
 
     [Fact]
-    public void ParsePrefersFenceAfterDrawingHeading()
+    public void Parse_FencesAroundDrawingHeading_TakesTheOneAfter()
     {
         var decoy = "## Text Elements\nsnippet with a fence ^ref1\n\n```json\n{\"not\":\"the drawing\"}\n```\n\n%%\n## Drawing\n";
         var file = $"{decoy}```compressed-json\n{LzString.CompressToBase64(SceneJson)}\n```\n%%";
@@ -82,7 +82,7 @@ public class ExcalidrawCodecTests
     }
 
     [Fact]
-    public void ParseAcceptsLegacyLevelOneDrawingHeading()
+    public void Parse_LevelOneDrawingHeading_IsAccepted()
     {
         var file = $"# Text Elements\nNode A ^abc123\n\n# Drawing\n```json\n{SceneJson}\n```\n";
 
@@ -92,13 +92,13 @@ public class ExcalidrawCodecTests
     }
 
     [Fact]
-    public void ParseRejectsPlainNote()
+    public void Parse_PlainNote_IsRejected()
     {
         Assert.Throws<FormatException>(() => ExcalidrawCodec.Parse("# Just a note\n\nNo drawing here.\n"));
     }
 
     [Fact]
-    public void ParseRejectsUnclosedDrawingBlock()
+    public void Parse_UnclosedDrawingBlock_IsRejected()
     {
         Assert.Throws<FormatException>(() => ExcalidrawCodec.Parse("## Drawing\n```compressed-json\nAAAA"));
     }

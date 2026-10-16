@@ -11,7 +11,18 @@ public sealed class MemoryVault : IVaultStore
 
     public string Read(string relativePath) => _files[relativePath];
 
+    public string? ReadHead(string relativePath) =>
+        _files.TryGetValue(relativePath, out var content) ? content[..Math.Min(512, content.Length)] : null;
+
     public bool Exists(string relativePath) => _files.ContainsKey(relativePath);
 
-    public void Write(string relativePath, string content) => _files[relativePath] = content;
+    public bool TryWrite(string relativePath, string content, bool overwrite)
+    {
+        if (!overwrite && _files.ContainsKey(relativePath))
+            return false;
+
+        _files[relativePath] = content;
+
+        return true;
+    }
 }

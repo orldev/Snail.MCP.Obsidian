@@ -1,14 +1,15 @@
 using Snail.MCP.Vault.Adapters.FileSystem;
 using Snail.MCP.Vault.Configuration;
+using Snail.MCP.Vault.Tests.Support;
 
 namespace Snail.MCP.Vault.Tests.Adapters.FileSystem;
 
 public class FileSystemVaultStoreTests : IDisposable
 {
-    private readonly string _root = Directory.CreateTempSubdirectory("vault-store-tests").FullName;
+    private readonly string _root = TestFolders.Create("vault-store-tests");
 
     [Fact]
-    public void EnumeratesMarkdownFilesOutsideServiceFolders()
+    public void MarkdownFiles_ServiceFolderBeside_ListsOnlyNotesOutsideIt()
     {
         WriteFile("Note.md", "note");
         WriteFile("Sub/Deep.md", "deep");
@@ -21,7 +22,7 @@ public class FileSystemVaultStoreTests : IDisposable
     }
 
     [Fact]
-    public void ReadsFileByRelativePath()
+    public void Read_RelativePath_GivesTheText()
     {
         WriteFile("Note.md", "the content");
 
@@ -29,7 +30,22 @@ public class FileSystemVaultStoreTests : IDisposable
     }
 
     [Fact]
-    public void RefusesPathThatEscapesTheVault()
+    public void ReadHead_LongNote_GivesItsFirst512Characters()
+    {
+        WriteFile("Long.md", new string('x', 4096));
+
+        Assert.Equal(512, Store().ReadHead("Long.md")!.Length);
+    }
+
+    /// <summary>A note deleted after the listing enumerated it is gone, not a failure of the listing.</summary>
+    [Fact]
+    public void ReadHead_NoteDeletedMeanwhile_IsNull()
+    {
+        Assert.Null(Store().ReadHead("Deleted/Meanwhile.md"));
+    }
+
+    [Fact]
+    public void Read_PathEscapingTheVault_IsRefused()
     {
         Assert.Throws<UnauthorizedAccessException>(() => Store().Read("../outside.md"));
     }

@@ -76,8 +76,8 @@ Draws an Excalidraw scheme from a logical description: you list what exists and 
 | Parameter | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
 | `path` | `string` | yes | — | Vault-relative path of the scheme file, e.g. 'Excalidraw/Payments.md'. |
-| `nodes` | `array` | yes | — | Nodes to draw; 'key' names the node for edges, 'text' is the caption, optional 'shape' is rectangle (default), diamond or ellipse. Optional 'group' stacks related nodes inside a labeled frame — prefer groups for schemes with more than ~8 nodes. |
-| `edges` | `array?` | — | `null` | Directed connections between node keys, each with an optional label. |
+| `nodes` | `array` | yes | — | Nodes to draw; 'key' names the node for edges, 'text' is the caption, optional 'shape' is rectangle (default), diamond or ellipse. Optional 'group' stacks related nodes inside a labeled frame — prefer groups for schemes with more than ~8 nodes. At most 500 nodes. |
+| `edges` | `array?` | — | `null` | Directed connections between node keys, each with an optional label. Without groups, the columns all edges skip add up to at most 20000 — give big schemes groups. At most 2000 edges. |
 | `overwrite` | `boolean` | — | `false` | Set true to redraw an existing file in place; the whole drawing is replaced by this spec. Without it an existing path is refused. |
 
 <details><summary>JSON Schema</summary>
@@ -91,7 +91,7 @@ Draws an Excalidraw scheme from a logical description: you list what exists and 
       "type": "string"
     },
     "nodes": {
-      "description": "Nodes to draw; \u0027key\u0027 names the node for edges, \u0027text\u0027 is the caption, optional \u0027shape\u0027 is rectangle (default), diamond or ellipse. Optional \u0027group\u0027 stacks related nodes inside a labeled frame \u2014 prefer groups for schemes with more than ~8 nodes.",
+      "description": "Nodes to draw; \u0027key\u0027 names the node for edges, \u0027text\u0027 is the caption, optional \u0027shape\u0027 is rectangle (default), diamond or ellipse. Optional \u0027group\u0027 stacks related nodes inside a labeled frame \u2014 prefer groups for schemes with more than ~8 nodes. At most 500 nodes.",
       "type": "array",
       "items": {
         "type": "object",
@@ -158,7 +158,7 @@ Draws an Excalidraw scheme from a logical description: you list what exists and 
             ]
           },
           "fontSize": {
-            "description": "Caption font size in px. Default 20.",
+            "description": "Caption font size in px, 8 to 120. Default 20.",
             "type": [
               "integer",
               "null"
@@ -179,7 +179,7 @@ Draws an Excalidraw scheme from a logical description: you list what exists and 
       }
     },
     "edges": {
-      "description": "Directed connections between node keys, each with an optional label.",
+      "description": "Directed connections between node keys, each with an optional label. Without groups, the columns all edges skip add up to at most 20000 \u2014 give big schemes groups. At most 2000 edges.",
       "type": [
         "array",
         "null"
@@ -278,10 +278,10 @@ Draws a scheme you compose yourself: you place every block, zone and label on th
 | Parameter | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
 | `path` | `string` | yes | — | Vault-relative path of the scheme file, e.g. 'Excalidraw/Payments.md'. |
-| `boxes` | `array` | yes | — | Blocks with captions; 'key' names the block for arrows. |
+| `boxes` | `array` | yes | — | Blocks with captions; 'key' names the block for arrows. At most 500 boxes. |
 | `zones` | `array?` | — | `null` | Background areas drawn under everything else — lanes, sections, highlighted regions. |
 | `texts` | `array?` | — | `null` | Free-standing texts: titles, legends, annotations. |
-| `arrows` | `array?` | — | `null` | Connections between blocks, each optionally routed through explicit bends. |
+| `arrows` | `array?` | — | `null` | Connections between blocks, each optionally routed through explicit bends. At most 2000 arrows. |
 | `overwrite` | `boolean` | — | `false` | Set true to redraw an existing file in place; the whole drawing is replaced. Without it an existing path is refused. |
 
 <details><summary>JSON Schema</summary>
@@ -295,7 +295,7 @@ Draws a scheme you compose yourself: you place every block, zone and label on th
       "type": "string"
     },
     "boxes": {
-      "description": "Blocks with captions; \u0027key\u0027 names the block for arrows.",
+      "description": "Blocks with captions; \u0027key\u0027 names the block for arrows. At most 500 boxes.",
       "type": "array",
       "items": {
         "type": "object",
@@ -377,7 +377,7 @@ Draws a scheme you compose yourself: you place every block, zone and label on th
             ]
           },
           "fontSize": {
-            "description": "Caption size in px. Default 20.",
+            "description": "Caption size in px, 8 to 120. Default 20.",
             "type": [
               "integer",
               "null"
@@ -420,9 +420,11 @@ Draws a scheme you compose yourself: you place every block, zone and label on th
             "type": "number"
           },
           "width": {
+            "description": "Width in canvas units.",
             "type": "number"
           },
           "height": {
+            "description": "Height in canvas units.",
             "type": "number"
           },
           "title": {
@@ -461,7 +463,7 @@ Draws a scheme you compose yourself: you place every block, zone and label on th
             ]
           },
           "titleSize": {
-            "description": "Title size in px. Default 20.",
+            "description": "Title size in px, 8 to 120. Default 20.",
             "type": [
               "integer",
               "null"
@@ -490,6 +492,7 @@ Draws a scheme you compose yourself: you place every block, zone and label on th
         ],
         "properties": {
           "text": {
+            "description": "The text to draw; use \\n for multiple lines.",
             "type": [
               "string",
               "null"
@@ -504,7 +507,7 @@ Draws a scheme you compose yourself: you place every block, zone and label on th
             "type": "number"
           },
           "fontSize": {
-            "description": "Size in px. Default 20.",
+            "description": "Size in px, 8 to 120. Default 20.",
             "type": [
               "integer",
               "null"
@@ -534,7 +537,7 @@ Draws a scheme you compose yourself: you place every block, zone and label on th
       "default": null
     },
     "arrows": {
-      "description": "Connections between blocks, each optionally routed through explicit bends.",
+      "description": "Connections between blocks, each optionally routed through explicit bends. At most 2000 arrows.",
       "type": [
         "array",
         "null"
