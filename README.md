@@ -76,6 +76,21 @@ alone (`chmod 600`), never in a launchd job or a client's registration, which tr
 | --- | --- | --- | --- |
 | `SNAIL_MCP_VAULT_PATH` | `Path` | yes, in one of the two | Absolute path to the Obsidian vault root. |
 
+## Performance
+
+The native program against `dotnet Snail.MCP.Vault.dll`, on an Apple Silicon Mac, the median of five sessions each:
+start, a first `scheme_create` of 24 nodes in four groups with 30 edges, a first `scheme_read` of it.
+
+| | Native (`osx-arm64`) | `dotnet Snail.MCP.Vault.dll` |
+| --- | --- | --- |
+| `initialize` answered | 29 ms | 359 ms |
+| first `scheme_create` | 9 ms | 125 ms |
+| first `scheme_read` | 2 ms | 33 ms |
+| peak memory | 29 MB | 75 MB |
+
+The same scheme in the benchmarks (`benchmarks/`, allocations per call): `scheme_create` 2.03 MB, `scheme_draw` of 18
+blocks and 17 arrows 1.55 MB, `scheme_read` 1.00 MB. The slowest layout within the limits takes about 2 s.
+
 ## Developing locally
 
 ```json
