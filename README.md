@@ -76,6 +76,8 @@ alone (`chmod 600`), never in a launchd job or a client's registration, which tr
 | --- | --- | --- | --- |
 | `SNAIL_MCP_VAULT_PATH` | `Path` | yes, in one of the two | Absolute path to the Obsidian vault root. |
 
+Without a vault, or with one that does not exist, the server still starts, and every tool answers with how to name it.
+
 ## Performance
 
 The native program against `dotnet Snail.MCP.Vault.dll`, on an Apple Silicon Mac, the median of five sessions each:

@@ -14,12 +14,12 @@ public sealed class SchemeTools(SchemeCatalog catalog, VaultConfig config)
     /// <summary>Where the vault is and how many schemes it holds.</summary>
     [McpServerTool(Name = "vault_status", ReadOnly = true)]
     [Description(ToolDescriptions.VaultStatus)]
-    public VaultStatus Status() => new(config.RootPath, catalog.List().Count);
+    public VaultStatus Status() => Refusals.Shown(() => new VaultStatus(config.Root, catalog.List().Count));
 
     /// <summary>The paths of every scheme.</summary>
     [McpServerTool(Name = "scheme_list", ReadOnly = true)]
     [Description(ToolDescriptions.SchemeList)]
-    public string[] List() => [.. catalog.List()];
+    public string[] List() => [.. Refusals.Shown(catalog.List)];
 
     /// <summary>A scheme as its logical graph.</summary>
     [McpServerTool(Name = "scheme_read", ReadOnly = true)]

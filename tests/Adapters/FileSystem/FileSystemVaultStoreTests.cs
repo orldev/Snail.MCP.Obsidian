@@ -1,4 +1,5 @@
 using Snail.MCP.Vault.Adapters.FileSystem;
+using Snail.MCP.Vault.Application;
 using Snail.MCP.Vault.Configuration;
 using Snail.Sdk.Mcp.Testing;
 
@@ -48,6 +49,16 @@ public class FileSystemVaultStoreTests : IDisposable
     public void Read_PathEscapingTheVault_IsRefused()
     {
         Assert.Throws<UnauthorizedAccessException>(() => Store().Read("../outside.md"));
+    }
+
+    [Fact]
+    public void MarkdownFiles_WithoutAVault_IsRefusedWithTheInstruction()
+    {
+        var store = new FileSystemVaultStore(new VaultConfig { Problem = "Name the vault." });
+
+        var refusal = Assert.Throws<VaultRefusal>(() => store.MarkdownFiles().ToList());
+
+        Assert.Equal("Name the vault.", refusal.Message);
     }
 
     public void Dispose() => Directory.Delete(_root, recursive: true);

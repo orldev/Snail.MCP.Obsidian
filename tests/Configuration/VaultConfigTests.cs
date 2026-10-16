@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Configuration;
+using Snail.MCP.Vault.Application;
 using Snail.MCP.Vault.Configuration;
 using Snail.Sdk.Mcp.Hosting;
 using Snail.Sdk.Mcp.Testing;
@@ -34,9 +35,29 @@ public sealed class VaultConfigTests : IDisposable
         Assert.Equal(Path.Combine(_scratch, "FromVariable"), config.RootPath);
     }
 
+    /// <summary>A missing vault is reported, not thrown: thrown, it aborted the server before the client connected, and no reason showed.</summary>
     [Fact]
-    public void Path_NowhereSet_StopsTheServer() =>
-        Assert.Throws<InvalidOperationException>(() => VaultConfig.Load(Settings(null, new Hashtable())));
+    public void Path_NowhereSet_IsReportedWithTheInstruction()
+    {
+        var config = VaultConfig.Load(Settings(null, new Hashtable()));
+
+        var refusal = Assert.Throws<VaultRefusal>(() => config.Root);
+
+        Assert.Null(config.RootPath);
+        Assert.Contains(VaultConfig.PathVariable, refusal.Message, StringComparison.Ordinal);
+        Assert.Contains(VaultConfig.SettingsFile, refusal.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Path_OfAFolderNotThere_IsReportedWithIt()
+    {
+        var missing = Path.Combine(_scratch, "Missing");
+
+        var config = VaultConfig.Load(Settings(null, new Hashtable { [VaultConfig.PathVariable] = missing }));
+
+        Assert.Null(config.RootPath);
+        Assert.Contains(missing, config.Problem, StringComparison.Ordinal);
+    }
 
     /// <summary>The host adds the settings chain itself only for a program that names its server; this one is <c>vault</c>.</summary>
     [Fact]

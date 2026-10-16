@@ -53,6 +53,24 @@ public sealed class StdioContractTests : IDisposable
         Assert.Empty(ToolGuards.Problems(listed.Select(tool => tool.ProtocolTool)));
     }
 
+    /// <summary>
+    /// A server whose vault is not named starts and answers every tool with how to name one: stopping instead, it
+    /// aborted before the client connected, and Claude Code showed no reason.
+    /// </summary>
+    [Fact]
+    public async Task CallTool_WithoutAVault_RefusesWithTheInstruction()
+    {
+        await using var client = await StartedAsync(new() { ["SNAIL_MCP_VAULT_PATH"] = null });
+
+        var status = await client.CallToolAsync("vault_status", new Dictionary<string, object?>());
+        var listed = await client.CallToolAsync("scheme_list", new Dictionary<string, object?>());
+
+        Assert.True(status.IsError);
+        Assert.Contains("SNAIL_MCP_VAULT_PATH", status.Text(), StringComparison.Ordinal);
+        Assert.True(listed.IsError);
+        Assert.Contains("SNAIL_MCP_VAULT_PATH", listed.Text(), StringComparison.Ordinal);
+    }
+
     /// <summary>A vault named only by the settings file, the file named by <c>SNAIL_MCP_VAULT_CONFIG</c>, is the server's.</summary>
     [Fact]
     public async Task Vault_FromTheSettingsFile_IsServed()

@@ -16,9 +16,14 @@ public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
 
     private const int MostLinksFollowed = 40;
 
-    private readonly string _root = WithSeparator(config.RootPath);
+    private readonly string? _root = config.RootPath is { } root ? WithSeparator(root) : null;
 
-    private readonly string _realRoot = WithSeparator(RealPath(Path.GetFullPath(config.RootPath)));
+    private readonly string? _realRoot = config.RootPath is { } root ? WithSeparator(RealPath(Path.GetFullPath(root))) : null;
+
+    /// <remarks>Without a vault every call is refused with the instruction to name one, and the store is still built: a tool is built outside the call that carries a refusal to the agent.</remarks>
+    private string Root => _root ?? config.Root;
+
+    private string RealRoot => _realRoot ?? config.Root;
 
     /// <inheritdoc/>
     /// <remarks>
@@ -33,9 +38,11 @@ public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
             AttributesToSkip = FileAttributes.Hidden | FileAttributes.System | FileAttributes.ReparsePoint,
         };
 
-        foreach (var file in Directory.EnumerateFiles(config.RootPath, "*.md", enumeration))
+        var root = Root;
+
+        foreach (var file in Directory.EnumerateFiles(root, "*.md", enumeration))
         {
-            var relative = Path.GetRelativePath(config.RootPath, file);
+            var relative = Path.GetRelativePath(root, file);
             if (!IsInsideServiceFolder(relative))
                 yield return relative.Replace(Path.DirectorySeparatorChar, '/');
         }
@@ -135,8 +142,9 @@ public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
     /// </remarks>
     private string Resolve(string relativePath)
     {
-        var fullPath = Path.GetFullPath(Path.Combine(_root, relativePath));
-        if (!fullPath.StartsWith(_root, StringComparison.Ordinal) || !LeadsInside(fullPath))
+        var root = Root;
+        var fullPath = Path.GetFullPath(Path.Combine(root, relativePath));
+        if (!fullPath.StartsWith(root, StringComparison.Ordinal) || !LeadsInside(fullPath))
             throw new UnauthorizedAccessException($"The path '{relativePath}' escapes the vault root.");
 
         return fullPath;
@@ -146,7 +154,7 @@ public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
     {
         try
         {
-            return WithSeparator(RealPath(fullPath)).StartsWith(_realRoot, StringComparison.Ordinal);
+            return WithSeparator(RealPath(fullPath)).StartsWith(RealRoot, StringComparison.Ordinal);
         }
         catch (IOException)
         {
