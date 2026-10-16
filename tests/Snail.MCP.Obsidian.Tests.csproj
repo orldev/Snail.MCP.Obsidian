@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\Snail.MCP.Vault.csproj"/>
+        <ProjectReference Include="..\src\Snail.MCP.Obsidian.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
-using Snail.MCP.Vault.Application.Excalidraw.Format;
+using Snail.MCP.Obsidian.Application.Excalidraw.Format;
 
-namespace Snail.MCP.Vault.Tests.Application.Excalidraw;
+namespace Snail.MCP.Obsidian.Tests.Application.Excalidraw;
 
 public class LzStringTests
 {

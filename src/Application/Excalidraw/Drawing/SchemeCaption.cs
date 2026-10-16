@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Application.Excalidraw.Drawing;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
 
 /// <summary>One caption text paired with the element id that anchors it as an Obsidian block reference.</summary>
 public sealed record SchemeCaption

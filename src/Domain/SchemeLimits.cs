@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>How big a scheme and its texts may be; the descriptions state the same numbers.</summary>
 public static class SchemeLimits

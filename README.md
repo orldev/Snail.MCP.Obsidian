@@ -1,4 +1,4 @@
-# Snail.MCP.Vault
+# Snail.MCP.Obsidian
 
 A reliable, high-level API between an AI agent and an Obsidian vault. The server lets the agent semantically analyze and programmatically update Excalidraw schemes without any risk of corrupting their file structure (Markdown + embedded JSON), and manage regular Markdown notes.
 
@@ -42,8 +42,8 @@ A native program on macOS, Linux and Windows, a framework-dependent one elsewher
 the machine it runs on:
 
 ```bash
-dotnet tool install -g Snail.MCP.Vault      # then the command is s3l-mcp-vault
-dnx Snail.MCP.Vault --yes                   # or run it without installing
+dotnet tool install -g Snail.MCP.Obsidian   # then the command is s3l-mcp-obsidian
+dnx Snail.MCP.Obsidian --yes                # or run it without installing
 ```
 
 On a machine that builds it from this repository, publish it beside the other Snail MCP servers and point the client
@@ -51,21 +51,21 @@ at `current`, which follows every later publication:
 
 ```bash
 dotnet publish src -c Release -r osx-arm64 -p:SnailMcpInstall=true
-claude mcp add -s user mem1 -- ~/.s3l-mcp/Snail.MCP.Vault/current/Snail.MCP.Vault
+claude mcp add -s user obsidian -- ~/.s3l-mcp/Snail.MCP.Obsidian/current/Snail.MCP.Obsidian
 ```
 
 The vault it serves is named in its settings file (*Configuration* below), not in the registration.
 
-Measured against `dotnet Snail.MCP.Vault.dll` on an Apple Silicon Mac: see *Performance* below.
+Measured against `dotnet Snail.MCP.Obsidian.dll` on an Apple Silicon Mac: see *Performance* below.
 
 ## Configuration
 
-The server reads its settings file, then its `SNAIL_MCP_VAULT_` variables, which win over the file. The file is the
-one `SNAIL_MCP_VAULT_CONFIG` names, the only one read when it is set, or else the first that exists of the chain every
-Snail MCP server reads ([Snail.Sdk](https://orldev.github.io/Snail.Sdk/)): `.s3l-mcp-vault.json` or
-`s3l-mcp-vault.json` in the working directory, `~/.config/s3l-mcp-vault/config.json`, `~/.s3l-mcp-vault.json`.
+The server reads its settings file, then its `SNAIL_MCP_OBSIDIAN_` variables, which win over the file. The file is the
+one `SNAIL_MCP_OBSIDIAN_CONFIG` names, the only one read when it is set, or else the first that exists of the chain every
+Snail MCP server reads ([Snail.Sdk](https://orldev.github.io/Snail.Sdk/)): `.s3l-mcp-obsidian.json` or
+`s3l-mcp-obsidian.json` in the working directory, `~/.config/s3l-mcp-obsidian/config.json`, `~/.s3l-mcp-obsidian.json`.
 
-The vault's address is a setting of this machine: it belongs in `~/.config/s3l-mcp-vault/config.json`, readable by you
+The vault's address is a setting of this machine: it belongs in `~/.config/s3l-mcp-obsidian/config.json`, readable by you
 alone (`chmod 600`), never in a launchd job or a client's registration, which travel wherever they are copied:
 
 ```json
@@ -74,16 +74,16 @@ alone (`chmod 600`), never in a launchd job or a client's registration, which tr
 
 | Variable | Field in the file | Required | Description |
 | --- | --- | --- | --- |
-| `SNAIL_MCP_VAULT_PATH` | `Path` | yes, in one of the two | Absolute path to the Obsidian vault root. |
+| `SNAIL_MCP_OBSIDIAN_PATH` | `Path` | yes, in one of the two | Absolute path to the Obsidian vault root. |
 
 Without a vault, or with one that does not exist, the server still starts, and every tool answers with how to name it.
 
 ## Performance
 
-The native program against `dotnet Snail.MCP.Vault.dll`, on an Apple Silicon Mac, the median of five sessions each:
+The native program against `dotnet Snail.MCP.Obsidian.dll`, on an Apple Silicon Mac, the median of five sessions each:
 start, a first `scheme_create` of 24 nodes in four groups with 30 edges, a first `scheme_read` of it.
 
-| | Native (`osx-arm64`) | `dotnet Snail.MCP.Vault.dll` |
+| | Native (`osx-arm64`) | `dotnet Snail.MCP.Obsidian.dll` |
 | --- | --- | --- |
 | `initialize` answered | 29 ms | 359 ms |
 | first `scheme_create` | 9 ms | 125 ms |
@@ -98,7 +98,7 @@ blocks and 17 arrows 1.55 MB, `scheme_read` 1.00 MB. The slowest layout within t
 ```json
 {
   "servers": {
-    "mem1": {
+    "obsidian": {
       "type": "stdio",
       "command": "dotnet",
       "args": ["run", "--project", "<PATH TO src DIRECTORY>"]

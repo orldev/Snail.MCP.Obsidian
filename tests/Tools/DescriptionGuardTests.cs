@@ -1,11 +1,11 @@
 using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Snail.MCP.Vault.Application.Excalidraw.Drawing;
-using Snail.MCP.Vault.Domain;
-using Snail.MCP.Vault.Tools;
+using Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
+using Snail.MCP.Obsidian.Domain;
+using Snail.MCP.Obsidian.Tools;
 
-namespace Snail.MCP.Vault.Tests.Tools;
+namespace Snail.MCP.Obsidian.Tests.Tools;
 
 /// <summary>
 /// Descriptions are a contract a model obeys, written by hand beside the code: these tests hold every allowed value and

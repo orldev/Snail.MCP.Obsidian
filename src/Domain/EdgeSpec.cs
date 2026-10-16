@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>One directed connection to draw between two node keys.</summary>
 public sealed record EdgeSpec : IEdgeStyle

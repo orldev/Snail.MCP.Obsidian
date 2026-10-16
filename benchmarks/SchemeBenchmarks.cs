@@ -1,9 +1,9 @@
 using BenchmarkDotNet.Attributes;
-using Snail.MCP.Vault.Application.Excalidraw.Drawing;
-using Snail.MCP.Vault.Application.Schemes;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
+using Snail.MCP.Obsidian.Application.Schemes;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Benchmarks;
+namespace Snail.MCP.Obsidian.Benchmarks;
 
 /// <summary>What scheme_create, scheme_draw and scheme_read do between the tool call and the file, on a vault in memory.</summary>
 [MemoryDiagnoser]

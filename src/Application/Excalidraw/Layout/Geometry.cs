@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Application.Excalidraw.Layout;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Layout;
 
 /// <summary>A box on the canvas.</summary>
 internal readonly record struct Rect(double X, double Y, double Width, double Height)

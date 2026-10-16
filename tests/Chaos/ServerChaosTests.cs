@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 using ModelContextProtocol.Client;
 using Snail.Sdk.Mcp.Testing;
 
-namespace Snail.MCP.Vault.Tests.Chaos;
+namespace Snail.MCP.Obsidian.Tests.Chaos;
 
 /// <summary>The server as a program, pushed where a test of its classes cannot reach: the MCP SDK between the agent and the code.</summary>
 public sealed class ServerChaosTests : IDisposable
@@ -61,7 +61,7 @@ public sealed class ServerChaosTests : IDisposable
     }
 
     private Task<McpClient> StartedAsync() =>
-        ServerProgram.StartAsync("Snail.MCP.Vault", "SNAIL_VAULT_SERVER", new Dictionary<string, string?> { ["SNAIL_MCP_VAULT_PATH"] = _vault.Root });
+        ServerProgram.StartAsync("Snail.MCP.Obsidian", "SNAIL_OBSIDIAN_SERVER", new Dictionary<string, string?> { ["SNAIL_MCP_OBSIDIAN_PATH"] = _vault.Root });
 
     private static Dictionary<string, object?> Scheme(string path, int chainLength)
     {

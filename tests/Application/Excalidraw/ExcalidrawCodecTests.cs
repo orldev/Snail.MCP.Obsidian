@@ -1,7 +1,7 @@
-using Snail.MCP.Vault.Application.Excalidraw.Format;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Application.Excalidraw.Format;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Tests.Application.Excalidraw;
+namespace Snail.MCP.Obsidian.Tests.Application.Excalidraw;
 
 public class ExcalidrawCodecTests
 {

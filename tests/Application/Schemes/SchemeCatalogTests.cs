@@ -1,9 +1,9 @@
-using Snail.MCP.Vault.Application.Excalidraw.Drawing;
-using Snail.MCP.Vault.Application.Excalidraw.Format;
-using Snail.MCP.Vault.Application.Ports;
-using Snail.MCP.Vault.Application.Schemes;
+using Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
+using Snail.MCP.Obsidian.Application.Excalidraw.Format;
+using Snail.MCP.Obsidian.Application.Ports;
+using Snail.MCP.Obsidian.Application.Schemes;
 
-namespace Snail.MCP.Vault.Tests.Application.Schemes;
+namespace Snail.MCP.Obsidian.Tests.Application.Schemes;
 
 public class SchemeCatalogTests
 {

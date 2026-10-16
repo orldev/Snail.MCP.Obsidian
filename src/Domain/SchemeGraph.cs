@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>Logical view of an Excalidraw scene: shapes with their captions, connections between them, and free-standing labels.</summary>
 public sealed record SchemeGraph

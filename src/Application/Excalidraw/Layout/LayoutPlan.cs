@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Application.Excalidraw.Layout;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Layout;
 
 /// <summary>Where every node goes, how every edge runs, in the order of the specification, and the group backdrops.</summary>
 internal sealed record LayoutPlan(

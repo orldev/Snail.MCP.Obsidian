@@ -1,8 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Tools;
+namespace Snail.MCP.Obsidian.Tools;
 
 /// <summary>What the tools take and give as JSON, described by generated code rather than found by reflection.</summary>
 /// <remarks>

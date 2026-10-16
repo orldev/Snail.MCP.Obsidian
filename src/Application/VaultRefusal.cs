@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Application;
+namespace Snail.MCP.Obsidian.Application;
 
 /// <summary>A request the vault turns down for a reason the agent can act on; the message tells it what to do instead.</summary>
 /// <remarks>

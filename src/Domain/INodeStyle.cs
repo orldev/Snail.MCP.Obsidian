@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>Everything that decides how a block looks, shared by laid-out schemes and free drawings.</summary>
 public interface INodeStyle

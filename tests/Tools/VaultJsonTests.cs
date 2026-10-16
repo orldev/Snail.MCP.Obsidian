@@ -1,8 +1,8 @@
 using System.Text.Json;
-using Snail.MCP.Vault.Domain;
-using Snail.MCP.Vault.Tools;
+using Snail.MCP.Obsidian.Domain;
+using Snail.MCP.Obsidian.Tools;
 
-namespace Snail.MCP.Vault.Tests.Tools;
+namespace Snail.MCP.Obsidian.Tests.Tools;
 
 /// <summary>A field the agent leaves out keeps the default the type declares, through the generated serializer too.</summary>
 public class VaultJsonTests

@@ -1,11 +1,11 @@
-using Snail.MCP.Vault.Adapters.FileSystem;
-using Snail.MCP.Vault.Application.Excalidraw.Drawing;
-using Snail.MCP.Vault.Application.Ports;
-using Snail.MCP.Vault.Application.Schemes;
-using Snail.MCP.Vault.Configuration;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Adapters.FileSystem;
+using Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
+using Snail.MCP.Obsidian.Application.Ports;
+using Snail.MCP.Obsidian.Application.Schemes;
+using Snail.MCP.Obsidian.Configuration;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Tests.Chaos;
+namespace Snail.MCP.Obsidian.Tests.Chaos;
 
 public sealed class SchemeCatalogChaosTests : IDisposable
 {

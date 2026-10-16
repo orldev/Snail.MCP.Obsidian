@@ -1,8 +1,8 @@
-using Snail.MCP.Vault.Application;
-using Snail.MCP.Vault.Application.Ports;
-using Snail.MCP.Vault.Configuration;
+using Snail.MCP.Obsidian.Application;
+using Snail.MCP.Obsidian.Application.Ports;
+using Snail.MCP.Obsidian.Configuration;
 
-namespace Snail.MCP.Vault.Adapters.FileSystem;
+namespace Snail.MCP.Obsidian.Adapters.FileSystem;
 
 /// <summary>Serves vault files from disk, refusing paths that escape the vault root.</summary>
 /// <remarks>

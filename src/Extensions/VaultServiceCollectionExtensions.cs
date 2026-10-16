@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Snail.MCP.Vault.Adapters.FileSystem;
-using Snail.MCP.Vault.Application.Excalidraw.Drawing;
-using Snail.MCP.Vault.Application.Ports;
-using Snail.MCP.Vault.Application.Schemes;
-using Snail.MCP.Vault.Configuration;
+using Snail.MCP.Obsidian.Adapters.FileSystem;
+using Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
+using Snail.MCP.Obsidian.Application.Ports;
+using Snail.MCP.Obsidian.Application.Schemes;
+using Snail.MCP.Obsidian.Configuration;
 
-namespace Snail.MCP.Vault.Extensions;
+namespace Snail.MCP.Obsidian.Extensions;
 
 /// <summary>Registration of everything behind the tools.</summary>
 public static class VaultServiceCollectionExtensions

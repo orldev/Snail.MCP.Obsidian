@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>An Excalidraw file split into byte-exact segments: everything outside the drawing payload is preserved verbatim.</summary>
 public sealed record ExcalidrawDocument

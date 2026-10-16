@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Application.Excalidraw.Layout;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Layout;
 
 /// <summary>Assigns every key of a directed graph a rank, the column it is drawn in, so that edges point forward.</summary>
 internal static class Ranking

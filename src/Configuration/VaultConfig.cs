@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Configuration;
-using Snail.MCP.Vault.Application;
+using Snail.MCP.Obsidian.Application;
 
-namespace Snail.MCP.Vault.Configuration;
+namespace Snail.MCP.Obsidian.Configuration;
 
-/// <summary>Server settings: the settings file of Snail.Sdk's chain, then the <c>SNAIL_MCP_VAULT_</c> variables, which win.</summary>
+/// <summary>Server settings: the settings file of Snail.Sdk's chain, then the <c>SNAIL_MCP_OBSIDIAN_</c> variables, which win.</summary>
 /// <remarks>
 /// A vault not named, or named and not there, is reported rather than thrown: the server starts, and every tool tells
 /// the agent how to name one. Thrown while the services were registered, it aborted the native program before the
@@ -12,13 +12,13 @@ namespace Snail.MCP.Vault.Configuration;
 public sealed record VaultConfig
 {
     /// <summary>The variable naming the vault root.</summary>
-    public const string PathVariable = "SNAIL_MCP_VAULT_PATH";
+    public const string PathVariable = "SNAIL_MCP_OBSIDIAN_PATH";
 
     /// <summary>The same setting as a field of the settings file.</summary>
     public const string PathKey = "Path";
 
     /// <summary>The settings file a machine keeps its vault in.</summary>
-    public const string SettingsFile = "~/.config/s3l-mcp-vault/config.json";
+    public const string SettingsFile = "~/.config/s3l-mcp-obsidian/config.json";
 
     /// <summary>Absolute path of the vault root; <c>null</c> when the settings name none that exists.</summary>
     public string? RootPath { get; init; }

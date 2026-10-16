@@ -15,5 +15,5 @@ jobs:
   ci:
     uses: orldev/Snail.Sdk/.github/workflows/mcp-ci.yml@v1
     with:
-      contract-variable: SNAIL_VAULT_SERVER
+      contract-variable: SNAIL_OBSIDIAN_SERVER
       contract-filter: FullyQualifiedName~StdioContract

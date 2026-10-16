@@ -1,10 +1,10 @@
 using System.ComponentModel;
 using ModelContextProtocol.Server;
-using Snail.MCP.Vault.Application.Schemes;
-using Snail.MCP.Vault.Configuration;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Application.Schemes;
+using Snail.MCP.Obsidian.Configuration;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Tools;
+namespace Snail.MCP.Obsidian.Tools;
 
 /// <summary>The MCP tools that read and draw Excalidraw schemes in the vault.</summary>
 /// <remarks>The two that draw say they are destructive: with overwrite=true they replace a whole drawing.</remarks>

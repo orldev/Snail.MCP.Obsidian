@@ -1,7 +1,7 @@
-using Snail.MCP.Vault.Adapters.FileSystem;
-using Snail.MCP.Vault.Configuration;
+using Snail.MCP.Obsidian.Adapters.FileSystem;
+using Snail.MCP.Obsidian.Configuration;
 
-namespace Snail.MCP.Vault.Tests.Chaos;
+namespace Snail.MCP.Obsidian.Tests.Chaos;
 
 /// <summary>The vault boundary against symbolic links: a link is a door, and the boundary is where the door leads.</summary>
 public sealed class VaultLinkChaosTests : IDisposable

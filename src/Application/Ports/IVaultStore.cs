@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Application.Ports;
+namespace Snail.MCP.Obsidian.Application.Ports;
 
 /// <summary>Access to the vault's markdown files by vault-relative path.</summary>
 public interface IVaultStore

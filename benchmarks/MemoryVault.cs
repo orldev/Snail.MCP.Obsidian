@@ -1,6 +1,6 @@
-using Snail.MCP.Vault.Application.Ports;
+using Snail.MCP.Obsidian.Application.Ports;
 
-namespace Snail.MCP.Vault.Benchmarks;
+namespace Snail.MCP.Obsidian.Benchmarks;
 
 /// <summary>A vault held in memory, so that a benchmark measures the drawing and not the disk.</summary>
 public sealed class MemoryVault : IVaultStore

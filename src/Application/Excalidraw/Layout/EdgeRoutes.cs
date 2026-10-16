@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Application.Excalidraw.Layout;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Layout;
 
 /// <summary>The shapes an arrow takes between two placed blocks: straight between neighbours, a bracket around everything else.</summary>
 internal static class EdgeRoutes

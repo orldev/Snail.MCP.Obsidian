@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>A shape on the scheme together with the caption bound into it.</summary>
 public sealed record SchemeNode

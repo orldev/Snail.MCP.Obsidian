@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>One node to draw; the key is how edges refer to it.</summary>
 public sealed record NodeSpec : INodeStyle

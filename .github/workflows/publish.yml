@@ -26,7 +26,7 @@ jobs:
   release:
     uses: orldev/Snail.Sdk/.github/workflows/mcp-publish.yml@v1
     with:
-      contract-variable: SNAIL_VAULT_SERVER
+      contract-variable: SNAIL_OBSIDIAN_SERVER
       contract-filter: FullyQualifiedName~StdioContract
       version: ${{ inputs.version }}
       push: ${{ github.event_name == 'push' || inputs.push }}

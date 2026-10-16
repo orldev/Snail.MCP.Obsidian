@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Application.Excalidraw.Layout;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Layout;
 
 /// <summary>Orders the slots of each rank so that fewer edges cross: each slot moves to the mean position of its neighbours.</summary>
 internal static class CrossingOrder

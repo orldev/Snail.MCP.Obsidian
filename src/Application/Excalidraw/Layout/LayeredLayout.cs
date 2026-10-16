@@ -1,7 +1,7 @@
-using Snail.MCP.Vault.Application.Excalidraw.Drawing;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw.Layout;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Layout;
 
 /// <summary>A scheme without groups in columns by rank, left to right; a long edge passes through waypoints in the columns it crosses.</summary>
 internal static class LayeredLayout

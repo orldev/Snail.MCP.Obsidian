@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw.Drawing;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
 
 /// <summary>The values Excalidraw accepts, and the size a block needs for its caption.</summary>
 internal static partial class StyleRules

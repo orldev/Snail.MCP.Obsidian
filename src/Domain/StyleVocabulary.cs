@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>Every value a style field of a scheme accepts, the words its description must name.</summary>
 /// <remarks>

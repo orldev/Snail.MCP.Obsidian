@@ -2,13 +2,13 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw.Drawing;
-using Snail.MCP.Vault.Application.Excalidraw.Format;
-using Snail.MCP.Vault.Application.Excalidraw.Reading;
-using Snail.MCP.Vault.Application.Ports;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
+using Snail.MCP.Obsidian.Application.Excalidraw.Format;
+using Snail.MCP.Obsidian.Application.Excalidraw.Reading;
+using Snail.MCP.Obsidian.Application.Ports;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Application.Schemes;
+namespace Snail.MCP.Obsidian.Application.Schemes;
 
 /// <summary>Finds Excalidraw schemes in the vault, serves their logical graphs, and draws new ones.</summary>
 public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer, SceneDrafter drafter)

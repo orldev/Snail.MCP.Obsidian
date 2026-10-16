@@ -1,7 +1,7 @@
 using ModelContextProtocol;
-using Snail.MCP.Vault.Application;
+using Snail.MCP.Obsidian.Application;
 
-namespace Snail.MCP.Vault.Tools;
+namespace Snail.MCP.Obsidian.Tools;
 
 /// <summary>Carries a refusal the agent can act on across the MCP SDK, which shows the agent the message of its own exception only.</summary>
 /// <remarks>

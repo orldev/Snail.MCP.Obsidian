@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Application.Excalidraw.Layout;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Layout;
 
 /// <summary>
 /// Arranges the stages of a scheme in a grid instead of one long row. A row is filled left to right, the next

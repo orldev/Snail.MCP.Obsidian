@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Tools;
+namespace Snail.MCP.Obsidian.Tools;
 
 /// <summary>What a model reads about each tool and parameter: instructions and limits that steer the agent, changed with care.</summary>
 /// <remarks>

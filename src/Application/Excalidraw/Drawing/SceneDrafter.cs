@@ -1,8 +1,8 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw.Layout;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Application.Excalidraw.Layout;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw.Drawing;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
 
 /// <summary>
 /// Renders a drawing exactly as composed by the caller: no layout of its own. It only does what the caller

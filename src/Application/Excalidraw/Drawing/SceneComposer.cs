@@ -1,9 +1,9 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw.Format;
-using Snail.MCP.Vault.Application.Excalidraw.Layout;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Application.Excalidraw.Format;
+using Snail.MCP.Obsidian.Application.Excalidraw.Layout;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw.Drawing;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
 
 /// <summary>Turns a scheme specification into a full Excalidraw scene: the layout it chooses, styling, ids and bindings.</summary>
 public sealed class SceneComposer(Random? random = null)

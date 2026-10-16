@@ -1,8 +1,8 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw.Format;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Application.Excalidraw.Format;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Tests.Application.Schemes;
+namespace Snail.MCP.Obsidian.Tests.Application.Schemes;
 
 public class SceneDraftingTests
 {

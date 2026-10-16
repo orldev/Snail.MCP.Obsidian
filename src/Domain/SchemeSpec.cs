@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>Declarative description of a scheme to draw: what the nodes say and how they connect.</summary>
 public sealed record SchemeSpec

@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>Free-standing text that is not bound into any shape or arrow.</summary>
 public sealed record SchemeLabel

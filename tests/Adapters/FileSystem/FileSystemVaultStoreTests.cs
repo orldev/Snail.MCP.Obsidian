@@ -1,9 +1,9 @@
-using Snail.MCP.Vault.Adapters.FileSystem;
-using Snail.MCP.Vault.Application;
-using Snail.MCP.Vault.Configuration;
+using Snail.MCP.Obsidian.Adapters.FileSystem;
+using Snail.MCP.Obsidian.Application;
+using Snail.MCP.Obsidian.Configuration;
 using Snail.Sdk.Mcp.Testing;
 
-namespace Snail.MCP.Vault.Tests.Adapters.FileSystem;
+namespace Snail.MCP.Obsidian.Tests.Adapters.FileSystem;
 
 public class FileSystemVaultStoreTests : IDisposable
 {

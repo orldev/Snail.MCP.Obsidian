@@ -1,7 +1,7 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw.Reading;
+using Snail.MCP.Obsidian.Application.Excalidraw.Reading;
 
-namespace Snail.MCP.Vault.Tests.Application.Excalidraw;
+namespace Snail.MCP.Obsidian.Tests.Application.Excalidraw;
 
 public class GraphProjectionTests
 {

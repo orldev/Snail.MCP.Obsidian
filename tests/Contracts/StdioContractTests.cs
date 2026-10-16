@@ -3,13 +3,13 @@ using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 using Snail.Sdk.Mcp.Testing;
 
-namespace Snail.MCP.Vault.Tests.Contracts;
+namespace Snail.MCP.Obsidian.Tests.Contracts;
 
 /// <summary>The server as a program, started the way a client starts it, against a vault of the test's own.</summary>
 /// <remarks>
 /// Only the process shows what a native build gets wrong: a parameter or a result type it was not told about fails
 /// when the tool is listed or called, not when the program is built. So every tool is called once.
-/// SNAIL_VAULT_SERVER names another build to start instead, such as a published native one.
+/// SNAIL_OBSIDIAN_SERVER names another build to start instead, such as a published native one.
 /// </remarks>
 public sealed class StdioContractTests : IDisposable
 {
@@ -18,7 +18,7 @@ public sealed class StdioContractTests : IDisposable
     public void Dispose() => Directory.Delete(_vault, recursive: true);
 
     private Task<McpClient> StartedAsync(Dictionary<string, string?>? variables = null) =>
-        ServerProgram.StartAsync("Snail.MCP.Vault", "SNAIL_VAULT_SERVER", variables ?? new() { ["SNAIL_MCP_VAULT_PATH"] = _vault });
+        ServerProgram.StartAsync("Snail.MCP.Obsidian", "SNAIL_OBSIDIAN_SERVER", variables ?? new() { ["SNAIL_MCP_OBSIDIAN_PATH"] = _vault });
 
     [Fact]
     public async Task ListTools_AsAProgram_NamesEveryTool()
@@ -36,7 +36,7 @@ public sealed class StdioContractTests : IDisposable
     {
         await using var client = await StartedAsync();
 
-        Assert.Equal("s3l-mcp-vault", client.ServerInfo.Name);
+        Assert.Equal("s3l-mcp-obsidian", client.ServerInfo.Name);
     }
 
     /// <summary>
@@ -60,18 +60,18 @@ public sealed class StdioContractTests : IDisposable
     [Fact]
     public async Task CallTool_WithoutAVault_RefusesWithTheInstruction()
     {
-        await using var client = await StartedAsync(new() { ["SNAIL_MCP_VAULT_PATH"] = null });
+        await using var client = await StartedAsync(new() { ["SNAIL_MCP_OBSIDIAN_PATH"] = null });
 
         var status = await client.CallToolAsync("vault_status", new Dictionary<string, object?>());
         var listed = await client.CallToolAsync("scheme_list", new Dictionary<string, object?>());
 
         Assert.True(status.IsError);
-        Assert.Contains("SNAIL_MCP_VAULT_PATH", status.Text(), StringComparison.Ordinal);
+        Assert.Contains("SNAIL_MCP_OBSIDIAN_PATH", status.Text(), StringComparison.Ordinal);
         Assert.True(listed.IsError);
-        Assert.Contains("SNAIL_MCP_VAULT_PATH", listed.Text(), StringComparison.Ordinal);
+        Assert.Contains("SNAIL_MCP_OBSIDIAN_PATH", listed.Text(), StringComparison.Ordinal);
     }
 
-    /// <summary>A vault named only by the settings file, the file named by <c>SNAIL_MCP_VAULT_CONFIG</c>, is the server's.</summary>
+    /// <summary>A vault named only by the settings file, the file named by <c>SNAIL_MCP_OBSIDIAN_CONFIG</c>, is the server's.</summary>
     [Fact]
     public async Task Vault_FromTheSettingsFile_IsServed()
     {
@@ -83,7 +83,7 @@ public sealed class StdioContractTests : IDisposable
 
             await File.WriteAllTextAsync(file, new JsonObject { ["Path"] = _vault }.ToJsonString());
 
-            await using var client = await StartedAsync(new() { ["SNAIL_MCP_VAULT_CONFIG"] = file, ["SNAIL_MCP_VAULT_PATH"] = null });
+            await using var client = await StartedAsync(new() { ["SNAIL_MCP_OBSIDIAN_CONFIG"] = file, ["SNAIL_MCP_OBSIDIAN_PATH"] = null });
 
             var status = await CalledAsync(client, "vault_status", []);
 

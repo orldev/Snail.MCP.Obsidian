@@ -1,8 +1,8 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw.Format;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Application.Excalidraw.Format;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw.Reading;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Reading;
 
 /// <summary>Projects a raw Excalidraw scene into the logical graph of nodes, edges and labels.</summary>
 public static class GraphProjection

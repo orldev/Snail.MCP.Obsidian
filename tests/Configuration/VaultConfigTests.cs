@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Configuration;
-using Snail.MCP.Vault.Application;
-using Snail.MCP.Vault.Configuration;
+using Snail.MCP.Obsidian.Application;
+using Snail.MCP.Obsidian.Configuration;
 using Snail.Sdk.Mcp.Hosting;
 using Snail.Sdk.Mcp.Testing;
 
-namespace Snail.MCP.Vault.Tests.Configuration;
+namespace Snail.MCP.Obsidian.Tests.Configuration;
 
 /// <summary>The vault root comes from the settings file of Snail.Sdk's chain, and the variable wins over the file.</summary>
 public sealed class VaultConfigTests : IDisposable
@@ -59,13 +59,13 @@ public sealed class VaultConfigTests : IDisposable
         Assert.Contains(missing, config.Problem, StringComparison.Ordinal);
     }
 
-    /// <summary>The host adds the settings chain itself only for a program that names its server; this one is <c>vault</c>.</summary>
+    /// <summary>The host adds the settings chain itself only for a program that names its server; this one is <c>obsidian</c>.</summary>
     [Fact]
     public void Server_ByItsAssembly_IsNamedForItsSettingsChain() =>
-        Assert.Equal("vault", ServerSettings.NameOf(typeof(VaultConfig).Assembly));
+        Assert.Equal("obsidian", ServerSettings.NameOf(typeof(VaultConfig).Assembly));
 
     private static IConfiguration Settings(string? file, IDictionary variables) =>
-        new ConfigurationBuilder().AddServerSettings("vault", file, variables).Build();
+        new ConfigurationBuilder().AddServerSettings("obsidian", file, variables).Build();
 
     private string Vault(string name) => Directory.CreateDirectory(Path.Combine(_scratch, name)).FullName;
 

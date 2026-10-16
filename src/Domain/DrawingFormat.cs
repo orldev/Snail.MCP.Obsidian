@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>Storage format of the drawing block inside an Excalidraw markdown file.</summary>
 public enum DrawingFormat

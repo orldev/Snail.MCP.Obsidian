@@ -1,6 +1,6 @@
 using Snail.Sdk.Mcp.Testing;
 
-namespace Snail.MCP.Vault.Tests.Chaos;
+namespace Snail.MCP.Obsidian.Tests.Chaos;
 
 /// <summary>A vault of one chaos test and the folder around it, made by TestFolder so that a cleaner can prove it a leftover.</summary>
 internal sealed class ChaosVault : IDisposable

@@ -1,8 +1,8 @@
 using System.Text.Json.Nodes;
-using Snail.MCP.Vault.Application.Excalidraw.Layout;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Application.Excalidraw.Layout;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw.Drawing;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
 
 /// <summary>
 /// Builds the raw Excalidraw elements — every field the plugin expects, ids, seeds and fractional indices

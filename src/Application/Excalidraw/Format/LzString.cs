@@ -1,7 +1,7 @@
 using System.Buffers;
 using System.Text;
 
-namespace Snail.MCP.Vault.Application.Excalidraw.Format;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Format;
 
 /// <summary>Base64 variant of pieroxy's LZ-String, bit-compatible with the JavaScript original used by the Obsidian Excalidraw plugin.</summary>
 public static class LzString

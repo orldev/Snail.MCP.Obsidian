@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>A drawing composed by the caller: it decides the whole layout, the server only renders it.</summary>
 public sealed record DrawSpec

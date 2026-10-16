@@ -1,7 +1,7 @@
 using System.Text;
-using Snail.MCP.Vault.Domain;
+using Snail.MCP.Obsidian.Domain;
 
-namespace Snail.MCP.Vault.Application.Excalidraw.Format;
+namespace Snail.MCP.Obsidian.Application.Excalidraw.Format;
 
 /// <summary>Splits an Excalidraw markdown file into byte-exact segments and converts the drawing payload between its stored form and plain JSON.</summary>
 public static class ExcalidrawCodec

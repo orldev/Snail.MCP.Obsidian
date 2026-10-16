@@ -1,12 +1,12 @@
 using System.Text.Json;
-using Snail.MCP.Vault.Application.Excalidraw.Format;
+using Snail.MCP.Obsidian.Application.Excalidraw.Format;
 
-namespace Snail.MCP.Vault.Tests.Application.Excalidraw;
+namespace Snail.MCP.Obsidian.Tests.Application.Excalidraw;
 
 public class RealVaultParityTests
 {
     private static readonly string VaultPath =
-        Environment.GetEnvironmentVariable("SNAIL_MCP_VAULT_TEST_PATH")
+        Environment.GetEnvironmentVariable("SNAIL_MCP_OBSIDIAN_TEST_PATH")
         ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Documents", "Obsidian Vault");
 
     public static TheoryData<string> SchemeFiles()

@@ -1,4 +1,4 @@
-namespace Snail.MCP.Vault.Domain;
+namespace Snail.MCP.Obsidian.Domain;
 
 /// <summary>A directed connection drawn as an arrow; either endpoint may be unbound.</summary>
 public sealed record SchemeEdge
