@@ -1,12 +1,12 @@
 using Snail.MCP.Vault.Adapters.FileSystem;
 using Snail.MCP.Vault.Configuration;
-using Snail.MCP.Vault.Tests.Support;
+using Snail.Sdk.Mcp.Testing;
 
 namespace Snail.MCP.Vault.Tests.Adapters.FileSystem;
 
 public class FileSystemVaultStoreTests : IDisposable
 {
-    private readonly string _root = TestFolders.Create("vault-store-tests");
+    private readonly string _root = TestFolder.Create();
 
     [Fact]
     public void MarkdownFiles_ServiceFolderBeside_ListsOnlyNotesOutsideIt()
@@ -50,7 +50,7 @@ public class FileSystemVaultStoreTests : IDisposable
         Assert.Throws<UnauthorizedAccessException>(() => Store().Read("../outside.md"));
     }
 
-    public void Dispose() => Directory.Delete(_root, true);
+    public void Dispose() => Directory.Delete(_root, recursive: true);
 
     private FileSystemVaultStore Store() => new(new VaultConfig { RootPath = _root });
 

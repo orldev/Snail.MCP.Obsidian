@@ -2,15 +2,15 @@ using System.Collections;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Configuration;
 using Snail.MCP.Vault.Configuration;
-using Snail.MCP.Vault.Tests.Support;
 using Snail.Sdk.Mcp.Hosting;
+using Snail.Sdk.Mcp.Testing;
 
 namespace Snail.MCP.Vault.Tests.Configuration;
 
 /// <summary>The vault root comes from the settings file of Snail.Sdk's chain, and the variable wins over the file.</summary>
 public sealed class VaultConfigTests : IDisposable
 {
-    private readonly string _scratch = TestFolders.Create("vault-config-tests");
+    private readonly string _scratch = TestFolder.Create();
 
     public void Dispose() => Directory.Delete(_scratch, recursive: true);
 

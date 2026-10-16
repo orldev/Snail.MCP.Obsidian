@@ -1,7 +1,6 @@
 using System.Text.Json.Nodes;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
-using Snail.MCP.Vault.Tests.Support;
 using Snail.Sdk.Mcp.Testing;
 
 namespace Snail.MCP.Vault.Tests.Contracts;
@@ -14,7 +13,7 @@ namespace Snail.MCP.Vault.Tests.Contracts;
 /// </remarks>
 public sealed class StdioContractTests : IDisposable
 {
-    private readonly string _vault = TestFolders.Create("vault-stdio-tests");
+    private readonly string _vault = TestFolder.Create();
 
     public void Dispose() => Directory.Delete(_vault, recursive: true);
 
@@ -58,7 +57,7 @@ public sealed class StdioContractTests : IDisposable
     [Fact]
     public async Task Vault_FromTheSettingsFile_IsServed()
     {
-        var settings = TestFolders.Create("vault-settings-tests");
+        var settings = TestFolder.Create();
 
         try
         {

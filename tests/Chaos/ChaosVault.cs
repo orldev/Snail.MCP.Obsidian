@@ -1,13 +1,13 @@
-using Snail.MCP.Vault.Tests.Support;
+using Snail.Sdk.Mcp.Testing;
 
 namespace Snail.MCP.Vault.Tests.Chaos;
 
-/// <summary>A vault folder of one chaos test, inside the test process's own home so that a cleaner can prove it a leftover.</summary>
+/// <summary>A vault of one chaos test and the folder around it, made by TestFolder so that a cleaner can prove it a leftover.</summary>
 internal sealed class ChaosVault : IDisposable
 {
     public ChaosVault(string name = "Vault")
     {
-        Parent = TestFolders.Create("chaos");
+        Parent = TestFolder.Create();
         Root = Directory.CreateDirectory(Path.Combine(Parent, name)).FullName;
     }
 
