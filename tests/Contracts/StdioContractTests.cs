@@ -36,6 +36,7 @@ public sealed class StdioContractTests : IDisposable
     {
         await using var client = await StartedAsync();
 
+        Assert.NotNull(client.ServerInfo);
         Assert.Equal("s3l-mcp-obsidian", client.ServerInfo.Name);
     }
 
