@@ -13,8 +13,8 @@ public sealed class ServerChaosTests : IDisposable
 
     /// <summary>
     /// Breaks the conversation with the agent. The refusal "pass overwrite=true … instead of inventing a new path" is
-    /// an InvalidOperationException, and the MCP SDK shows the agent the message of an McpException only: the agent
-    /// reads "An error occurred invoking 'scheme_create'." and never the instruction the description promises.
+    /// an InvalidOperationException, and the MCP SDK alone shows the agent "An error occurred invoking
+    /// 'scheme_create'." and never the instruction the description promises.
     /// </summary>
     [Fact]
     public async Task SchemeCreate_ExistingPathWithoutOverwrite_TellsTheAgentToPassOverwrite()
@@ -25,7 +25,8 @@ public sealed class ServerChaosTests : IDisposable
         var second = await client.CallToolAsync("scheme_create", Scheme("Excalidraw/Twice.md", 2));
 
         Assert.True(second.IsError);
-        Assert.Contains("overwrite", second.Text(), StringComparison.Ordinal);
+        Assert.Equal("refused", second.Type());
+        Assert.Contains("overwrite", second.Error(), StringComparison.Ordinal);
     }
 
     /// <summary>

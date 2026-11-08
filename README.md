@@ -33,7 +33,10 @@ Both write the same plugin-valid file and both take `overwrite=true` to redraw a
 **Limits.** A scheme takes at most 500 nodes (boxes) and 2000 edges (arrows); text sizes run from 8 to 120 px; without
 groups, the columns all edges skip add up to at most 20000. Within them the slowest layout measured takes about 2 s; a
 request beyond them is refused with a message saying what to change — the agent sees every refusal's text, not a
-generic error. A new path is claimed atomically, so of two calls racing for it one is refused, and a drawing is
+generic error. Every answer is one JSON envelope, `{"ok":true,"data":…}` or `{"ok":false,"error":…,"hint":…,"type":…}`
+flagged `isError`; `type` says whose the failure is: `refused` (the vault turned the call down), `arguments` (a value
+the drawing does not take), `corrupted` (a file that is no readable drawing), `denied` (a path outside the vault), or
+`internal` (the server's own). A new path is claimed atomically, so of two calls racing for it one is refused, and a drawing is
 written whole or not at all.
 
 ## Install
@@ -74,7 +77,7 @@ alone (`chmod 600`), never in a launchd job or a client's registration, which tr
 
 | Variable | Field in the file | Required | Description |
 | --- | --- | --- | --- |
-| `SNAIL_MCP_OBSIDIAN_PATH` | `Path` | yes, in one of the two | Absolute path to the Obsidian vault root. |
+| `SNAIL_MCP_OBSIDIAN_PATH` | `Path` | yes, in one of the two | Absolute path to the Obsidian vault root; a leading `~` is your home. |
 
 Without a vault, or with one that does not exist, the server still starts, and every tool answers with how to name it.
 

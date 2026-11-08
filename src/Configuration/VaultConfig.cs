@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Snail.MCP.Obsidian.Application;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.Obsidian.Configuration;
 
@@ -32,7 +33,7 @@ public sealed record VaultConfig
     private static string NotNamed =>
         $"No vault is named: set {PathVariable}, or \"{PathKey}\" in {SettingsFile}, to the absolute path of the Obsidian vault root.";
 
-    /// <summary>What the settings say about the vault, a missing one included.</summary>
+    /// <summary>What the settings say about the vault, a missing one included; a leading <c>~</c> is the user's home.</summary>
     public static VaultConfig Load(IConfiguration settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
@@ -41,7 +42,7 @@ public sealed record VaultConfig
         if (string.IsNullOrWhiteSpace(root))
             return new VaultConfig { Problem = NotNamed };
 
-        var fullPath = Path.GetFullPath(root);
+        var fullPath = ServerFolders.FullPath(root);
         if (!Directory.Exists(fullPath))
             return new VaultConfig { Problem = $"The vault '{fullPath}' does not exist: set {PathVariable}, or \"{PathKey}\" in {SettingsFile}, to an existing folder." };
 

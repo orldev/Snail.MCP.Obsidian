@@ -1,24 +1,25 @@
 using Snail.MCP.Obsidian.Application;
 using Snail.MCP.Obsidian.Application.Ports;
 using Snail.MCP.Obsidian.Configuration;
+using Snail.Sdk.Mcp.Hosting.Sessions;
 
 namespace Snail.MCP.Obsidian.Adapters.FileSystem;
 
 /// <summary>Serves vault files from disk, refusing paths that escape the vault root.</summary>
 /// <remarks>
-/// The boundary is where a path leads, not how it reads: a symbolic link is followed before the path is compared
-/// with the root, itself taken with its links followed. Checked as text, "Linked/Stolen.md" wrote through a link to
-/// a folder outside the vault, and a note that was a link to a file outside read that file.
+/// The boundary is where a path leads, not how it reads: every symbolic link on it is followed (RealPath of Snail.Sdk)
+/// before the path is compared with the root, itself taken with its links followed. Checked as text,
+/// "Linked/Stolen.md" wrote through a link to a folder outside the vault, and a note that was a link to a file outside
+/// read that file. A link whose target is not there yet is followed too: taken for the end of the path, a write
+/// through it created the file outside.
 /// </remarks>
 public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
 {
     private const int HeadLength = 512;
 
-    private const int MostLinksFollowed = 40;
-
     private readonly string? _root = config.RootPath is { } root ? WithSeparator(root) : null;
 
-    private readonly string? _realRoot = config.RootPath is { } root ? WithSeparator(RealPath(Path.GetFullPath(root))) : null;
+    private readonly string? _realRoot = config.RootPath is { } root ? WithSeparator(RealPath.Of(Path.GetFullPath(root)) ?? root) : null;
 
     /// <remarks>Without a vault every call is refused with the instruction to name one, and the store is still built: a tool is built outside the call that carries a refusal to the agent.</remarks>
     private string Root => _root ?? config.Root;
@@ -150,48 +151,9 @@ public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
         return fullPath;
     }
 
-    private bool LeadsInside(string fullPath)
-    {
-        try
-        {
-            return WithSeparator(RealPath(fullPath)).StartsWith(RealRoot, StringComparison.Ordinal);
-        }
-        catch (IOException)
-        {
-            return false;
-        }
-    }
-
-    /// <summary>The path with every symbolic link along it followed, as far as the path exists.</summary>
-    /// <remarks>
-    /// Whether a segment is a link is read from the segment itself, which answers null for a path not there yet; only
-    /// a link is then followed to its final target. A link that leads round in a circle is refused by the system or by
-    /// the count of links followed.
-    /// </remarks>
-    private static string RealPath(string fullPath, int linksFollowed = 0)
-    {
-        if (linksFollowed > MostLinksFollowed)
-            throw new IOException($"More than {MostLinksFollowed} links lead from '{fullPath}'.");
-
-        var root = Path.GetPathRoot(fullPath)!;
-        var segments = fullPath[root.Length..].Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
-        var real = root;
-
-        foreach (var segment in segments)
-        {
-            var next = new FileInfo(Path.Join(real, segment));
-            if (next.LinkTarget is null)
-            {
-                real = next.FullName;
-                continue;
-            }
-
-            var target = next.ResolveLinkTarget(returnFinalTarget: true)!;
-            real = RealPath(target.FullName, linksFollowed + 1);
-        }
-
-        return real;
-    }
+    /// <remarks>A path whose links cannot be followed — a loop, more than RealPath.MostLinks of them, one that may not be read — leads nowhere inside.</remarks>
+    private bool LeadsInside(string fullPath) =>
+        RealPath.Of(fullPath) is { } real && WithSeparator(real).StartsWith(RealRoot, StringComparison.Ordinal);
 
     private static string WithSeparator(string path) =>
         $"{Path.TrimEndingDirectorySeparator(path)}{Path.DirectorySeparatorChar}";

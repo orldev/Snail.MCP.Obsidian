@@ -1,6 +1,5 @@
 using System.Text.Json.Nodes;
 using ModelContextProtocol.Client;
-using ModelContextProtocol.Protocol;
 using Snail.Sdk.Mcp.Testing;
 
 namespace Snail.MCP.Obsidian.Tests.Contracts;
@@ -67,9 +66,45 @@ public sealed class StdioContractTests : IDisposable
         var listed = await client.CallToolAsync("scheme_list", new Dictionary<string, object?>());
 
         Assert.True(status.IsError);
-        Assert.Contains("SNAIL_MCP_OBSIDIAN_PATH", status.Text(), StringComparison.Ordinal);
+        Assert.False(status.IsOk());
+        Assert.Equal("refused", status.Type());
+        Assert.Contains("SNAIL_MCP_OBSIDIAN_PATH", status.Error(), StringComparison.Ordinal);
         Assert.True(listed.IsError);
-        Assert.Contains("SNAIL_MCP_OBSIDIAN_PATH", listed.Text(), StringComparison.Ordinal);
+        Assert.Contains("SNAIL_MCP_OBSIDIAN_PATH", listed.Error(), StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// A value the drawing does not take is the call's mistake, not the server's: answered "failed inside, try once
+    /// more", the model repeated the call as it was.
+    /// </summary>
+    [Fact]
+    public async Task CallTool_WithAValueTheDrawingDoesNotTake_IsTheCallsMistake()
+    {
+        await using var client = await StartedAsync();
+
+        var answer = await client.CallToolAsync("scheme_create", new Dictionary<string, object?>
+        {
+            ["path"] = "Excalidraw/Odd.md",
+            ["nodes"] = new JsonArray(new JsonObject { ["key"] = "a", ["text"] = "A", ["shape"] = "hexagon" })
+        });
+
+        Assert.True(answer.IsError);
+        Assert.Equal("arguments", answer.Type());
+        Assert.Contains("hexagon", answer.Error(), StringComparison.Ordinal);
+        Assert.NotNull(answer.Hint());
+    }
+
+    /// <summary>A path that leaves the vault is refused as the caller's, with what to name instead.</summary>
+    [Fact]
+    public async Task CallTool_WithAPathOutsideTheVault_IsDenied()
+    {
+        await using var client = await StartedAsync();
+
+        var answer = await client.CallToolAsync("scheme_read", new Dictionary<string, object?> { ["path"] = "../Outside.md" });
+
+        Assert.True(answer.IsError);
+        Assert.Equal("denied", answer.Type());
+        Assert.Contains("escapes the vault root", answer.Error(), StringComparison.Ordinal);
     }
 
     /// <summary>A vault named only by the settings file, the file named by <c>SNAIL_MCP_OBSIDIAN_CONFIG</c>, is the server's.</summary>
@@ -120,17 +155,16 @@ public sealed class StdioContractTests : IDisposable
         Assert.Equal("Excalidraw/Created.md", created["path"]!.GetValue<string>());
         Assert.Equal(2, drawn["boxCount"]!.GetValue<int>());
         Assert.Equal(2, read["nodes"]!.AsArray().Count);
-        Assert.Contains(listed is JsonArray list ? list : listed["result"]!.AsArray(), path => path!.GetValue<string>() == "Excalidraw/Drawn.md");
+        Assert.Contains(listed.AsArray(), path => path!.GetValue<string>() == "Excalidraw/Drawn.md");
         Assert.Equal(2, status["schemeCount"]!.GetValue<int>());
     }
 
     private static async Task<JsonNode> CalledAsync(McpClient client, string tool, Dictionary<string, object?> arguments)
     {
         var answer = await client.CallToolAsync(tool, arguments);
-        var text = Assert.IsType<TextContentBlock>(Assert.Single(answer.Content)).Text;
 
-        Assert.True(answer.IsError != true, $"{tool} failed: {text}");
+        Assert.True(answer.IsOk(), $"{tool} failed: {answer.Text()}");
 
-        return answer.StructuredContent is { } structured ? JsonNode.Parse(structured.GetRawText())! : JsonNode.Parse(text)!;
+        return answer.Data()!;
     }
 }

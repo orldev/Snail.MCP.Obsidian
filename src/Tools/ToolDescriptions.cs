@@ -7,6 +7,12 @@ namespace Snail.MCP.Obsidian.Tools;
 /// </remarks>
 internal static class ToolDescriptions
 {
+    public const string ServerInstructions =
+        "Reads and draws Excalidraw schemes in an Obsidian vault on this machine. Start with vault_status. " +
+        "scheme_create lays a scheme out from nodes and edges and is the default; scheme_draw renders one you compose yourself. " +
+        "Every answer is JSON with an ok flag, and a failed call is also flagged isError. When ok is false, read error and " +
+        "hint and fix the call instead of retrying it verbatim; type names the failure.";
+
     public const string VaultStatus = "Shows the vault root path and how many Excalidraw schemes it contains.";
 
     public const string SchemeList = "Lists vault-relative paths of all Excalidraw scheme files.";

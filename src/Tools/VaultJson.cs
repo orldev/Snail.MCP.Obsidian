@@ -15,14 +15,13 @@ namespace Snail.MCP.Obsidian.Tools;
 /// null instead of its default, where reflection had kept the default.
 /// </para>
 /// <para>
-/// A tool answers with a concrete type: the SDK serializes a result by the type it is at run time, and the list a
-/// collection expression makes is a compiler-made type with two list interfaces, which the generated code refuses
-/// to choose between.
+/// A tool answers through <c>ToolAnswer.Ok(data, typeInfo)</c> with the type information named here, so the data is
+/// written by its declared type: the list a collection expression makes, a compiler-made type with two list
+/// interfaces, goes out as the <c>IReadOnlyList&lt;string&gt;</c> it is declared.
 /// </para>
 /// </remarks>
 [JsonSourceGenerationOptions(JsonSerializerDefaults.Web)]
 [JsonSerializable(typeof(IReadOnlyList<string>))]
-[JsonSerializable(typeof(string[]))]
 [JsonSerializable(typeof(IReadOnlyList<NodeSpec>))]
 [JsonSerializable(typeof(IReadOnlyList<EdgeSpec>))]
 [JsonSerializable(typeof(IReadOnlyList<DrawBox>))]

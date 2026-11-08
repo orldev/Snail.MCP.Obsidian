@@ -33,6 +33,37 @@ public sealed class VaultLinkChaosTests : IDisposable
         Assert.False(File.Exists(Path.Combine(_outside, "Stolen.md")), "the file was written outside the vault");
     }
 
+    /// <summary>
+    /// Breaks the boundary on write through a link whose target is not there yet. A walk that takes a missing target
+    /// for the end of the path sees "Ghost.md" inside the vault, and the write creates the file the link names outside.
+    /// </summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void TryWrite_ThroughDanglingFileLinkLeadingOut_IsRefused(bool overwrite)
+    {
+        var target = Path.Combine(_outside, "Ghost.md");
+        File.CreateSymbolicLink(Path.Combine(_vault.Root, "Ghost.md"), target);
+
+        var refusal = Record.Exception(() => Store().TryWrite("Ghost.md", "outside", overwrite));
+
+        Assert.IsType<UnauthorizedAccessException>(refusal);
+        Assert.False(File.Exists(target), "the file was written outside the vault");
+    }
+
+    /// <summary>Breaks the boundary on write through a link to a folder not there yet: creating the note's folder would create it outside.</summary>
+    [Fact]
+    public void TryWrite_ThroughDanglingDirectoryLinkLeadingOut_IsRefused()
+    {
+        var target = Path.Combine(_outside, "Missing");
+        Directory.CreateSymbolicLink(Path.Combine(_vault.Root, "Gone"), target);
+
+        var refusal = Record.Exception(() => Store().TryWrite("Gone/Stolen.md", "outside", overwrite: false));
+
+        Assert.IsType<UnauthorizedAccessException>(refusal);
+        Assert.False(Directory.Exists(target), "a folder was created outside the vault");
+    }
+
     /// <summary>Breaks the boundary on read: a note that is a link to a file outside reads that file.</summary>
     [Fact]
     public void Read_FileLinkLeadingOut_IsRefused()
