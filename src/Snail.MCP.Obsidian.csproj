@@ -7,7 +7,7 @@
     -->
 
     <PropertyGroup>
-        <PackageVersion>0.1.0</PackageVersion>
+        <Version>0.1.0</Version>
         <PackageTags>AI; MCP; server; stdio; obsidian; excalidraw</PackageTags>
         <Description>MCP server bridging AI agents and an Obsidian vault: semantic reading and safe drawing of Excalidraw schemes.</Description>
     </PropertyGroup>

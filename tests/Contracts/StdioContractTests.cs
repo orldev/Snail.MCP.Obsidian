@@ -41,6 +41,33 @@ public sealed class StdioContractTests : IDisposable
     }
 
     /// <summary>
+    /// A client is told the version the registry publishes: with PackageVersion in place of Version the package was
+    /// 0.1.0 and the program said 1.0.0, the assembly's default. A release writes its version into both.
+    /// </summary>
+    [Fact]
+    public async Task Initialize_AsAProgram_SaysTheVersionTheRegistryPublishes()
+    {
+        await using var client = await StartedAsync();
+
+        var published = JsonNode.Parse(await File.ReadAllTextAsync(RegistryManifest()))!["version"]!.GetValue<string>();
+
+        Assert.NotNull(client.ServerInfo);
+        Assert.Equal(published, client.ServerInfo.Version);
+    }
+
+    private static string RegistryManifest()
+    {
+        var folder = new DirectoryInfo(AppContext.BaseDirectory);
+
+        while (folder is not null && !File.Exists(Path.Combine(folder.FullName, ".mcp", "server.json")))
+            folder = folder.Parent;
+
+        Assert.NotNull(folder);
+
+        return Path.Combine(folder.FullName, ".mcp", "server.json");
+    }
+
+    /// <summary>
     /// The guard rules of every Snail server, on the list a model receives: names in snake case and listed once, the tool
     /// and every parameter described, read-only or destructive stated, every allowed value named, English.
     /// </summary>
