@@ -1,4 +1,5 @@
 using Snail.MCP.Obsidian.Application;
+using Snail.Sdk.Mcp.Hosting;
 using Snail.Sdk.Mcp.Hosting.Answers;
 
 namespace Snail.MCP.Obsidian.Tools;
@@ -21,7 +22,7 @@ public static class VaultFailures
 
         failures
             .Refuse<VaultRefusal>("refused")
-            .Refuse<DrawingRefusal>("arguments", static _ => "change what the error names; the tool's description lists the values and limits each field takes")
+            .Refuse<DrawingRefusal>(ToolFailures.Arguments, static _ => "change what the error names; the tool's description lists the values and limits each field takes")
             .Refuse<CorruptedDrawing>("corrupted", static _ => "the file is not a drawing this server can read: repair it in Obsidian, or redraw it with overwrite=true")
             .Refuse<VaultEscape>("denied", static _ => "name a vault-relative path that stays inside the vault");
     }

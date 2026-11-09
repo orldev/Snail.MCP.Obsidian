@@ -19,7 +19,7 @@ public sealed class VaultFailuresTests
 {
     [Theory]
     [InlineData("vault", "refused")]
-    [InlineData("drawing", "arguments")]
+    [InlineData("drawing", ToolFailures.Arguments)]
     [InlineData("corrupted", "corrupted")]
     [InlineData("escape", "denied")]
     public async Task CallTool_ThrowingARefusalOfTheVault_AnswersItsType(string thrown, string type)
@@ -41,7 +41,7 @@ public sealed class VaultFailuresTests
         var answer = await CalledAsync(thrown);
 
         Assert.True(answer.IsError);
-        Assert.Equal("internal", answer.Type());
+        Assert.Equal(ToolFailures.Internal, answer.Type());
     }
 
     private static async Task<CallToolResult> CalledAsync(string thrown)

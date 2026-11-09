@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
-  "description": "Reads an Obsidian vault by meaning and edits its Markdown notes and Excalidraw schemes safely.",
+  "description": "Reads an Obsidian vault's Excalidraw schemes by meaning and draws them safely.",
   "name": "io.github.orldev/snail-mcp-obsidian",
   "version": "0.1.0",
   "packages": [
@@ -16,6 +16,12 @@
         {
           "name": "SNAIL_MCP_OBSIDIAN_PATH",
           "description": "Absolute path to the Obsidian vault root; \"Path\" in ~/.config/s3l-mcp-obsidian/config.json when not set.",
+          "isRequired": false,
+          "format": "filepath"
+        },
+        {
+          "name": "SNAIL_MCP_OBSIDIAN_CONFIG",
+          "description": "The settings file to read, the only one read when set; otherwise the first that exists of the chain every Snail MCP server reads.",
           "isRequired": false,
           "format": "filepath"
         }

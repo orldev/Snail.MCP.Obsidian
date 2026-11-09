@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using ModelContextProtocol.Client;
+using Snail.Sdk.Mcp.Hosting;
 using Snail.Sdk.Mcp.Testing;
 
 namespace Snail.MCP.Obsidian.Tests.Contracts;
@@ -89,9 +90,28 @@ public sealed class StdioContractTests : IDisposable
         });
 
         Assert.True(answer.IsError);
-        Assert.Equal("arguments", answer.Type());
+        Assert.Equal(ToolFailures.Arguments, answer.Type());
         Assert.Contains("hexagon", answer.Error(), StringComparison.Ordinal);
         Assert.NotNull(answer.Hint());
+    }
+
+    /// <summary>A parameter the tool does not take is refused before anything is drawn: <c>edge</c> for <c>edges</c> drew a scheme without its connections.</summary>
+    [Fact]
+    public async Task CallTool_WithAParameterTheToolDoesNotTake_IsRefusedBeforeDrawing()
+    {
+        await using var client = await StartedAsync();
+
+        var answer = await client.CallToolAsync("scheme_create", new Dictionary<string, object?>
+        {
+            ["path"] = "Excalidraw/Unlinked.md",
+            ["nodes"] = new JsonArray(new JsonObject { ["key"] = "a", ["text"] = "A" }, new JsonObject { ["key"] = "b", ["text"] = "B" }),
+            ["edge"] = new JsonArray(new JsonObject { ["from"] = "a", ["to"] = "b" })
+        });
+
+        Assert.True(answer.IsError);
+        Assert.Equal(ToolFailures.Arguments, answer.Type());
+        Assert.Contains("edges", answer.Text(), StringComparison.Ordinal);
+        Assert.False(File.Exists(Path.Combine(_vault, "Excalidraw", "Unlinked.md")));
     }
 
     /// <summary>A path that leaves the vault is refused as the caller's, with what to name instead.</summary>

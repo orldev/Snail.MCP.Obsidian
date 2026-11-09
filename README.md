@@ -1,13 +1,13 @@
 # Snail.MCP.Obsidian
 
-A reliable, high-level API between an AI agent and an Obsidian vault. The server lets the agent semantically analyze and programmatically update Excalidraw schemes without any risk of corrupting their file structure (Markdown + embedded JSON), and manage regular Markdown notes.
+A reliable, high-level API between an AI agent and an Obsidian vault. The server lets the agent read Excalidraw schemes by meaning and draw or redraw them without any risk of corrupting their file structure (Markdown + embedded JSON). Markdown notes are not read or written yet.
 
 ## Why
 
 LLMs understand logic well but struggle with spatial math and strict file formats. Editing an Excalidraw file by hand, an agent guesses coordinates, breaks the plugin envelope, or produces invalid JSON. This server isolates that complexity:
 
 - **File safety** — the server generates element ids, computes grid coordinates, and performs safe JSON-in-Markdown edits. The agent just says "add a Database node".
-- **Code / diagram sync** — from any project folder the agent can ask "update the architecture scheme"; the server finds the right scheme in the vault and patches it.
+- **Code / diagram sync** — from any project folder the agent can ask "update the architecture scheme"; the server finds the right scheme in the vault and redraws it in place (`overwrite=true`).
 - **Semantic reading** — a raw Excalidraw file is noise (colors, fonts, point arrays); the server projects it into a clean graph: `Node A (Frontend) -> Node B (API)`.
 
 ## Status
