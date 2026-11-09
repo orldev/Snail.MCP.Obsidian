@@ -1,3 +1,4 @@
+using Snail.MCP.Obsidian.Application;
 using Snail.MCP.Obsidian.Application.Excalidraw.Format;
 using Snail.MCP.Obsidian.Domain;
 
@@ -94,13 +95,13 @@ public class ExcalidrawCodecTests
     [Fact]
     public void Parse_PlainNote_IsRejected()
     {
-        Assert.Throws<FormatException>(() => ExcalidrawCodec.Parse("# Just a note\n\nNo drawing here.\n"));
+        Assert.Throws<CorruptedDrawing>(() => ExcalidrawCodec.Parse("# Just a note\n\nNo drawing here.\n"));
     }
 
     [Fact]
     public void Parse_UnclosedDrawingBlock_IsRejected()
     {
-        Assert.Throws<FormatException>(() => ExcalidrawCodec.Parse("## Drawing\n```compressed-json\nAAAA"));
+        Assert.Throws<CorruptedDrawing>(() => ExcalidrawCodec.Parse("## Drawing\n```compressed-json\nAAAA"));
     }
 
     private static string CompressedFile(string sceneJson) =>

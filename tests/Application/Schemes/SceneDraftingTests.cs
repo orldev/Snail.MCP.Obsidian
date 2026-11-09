@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using Snail.MCP.Obsidian.Application;
 using Snail.MCP.Obsidian.Application.Excalidraw.Format;
 using Snail.MCP.Obsidian.Domain;
 
@@ -112,6 +113,6 @@ public class SceneDraftingTests
         var catalog = SchemeCatalogTests.Catalog([]);
         var broken = Spec with { Arrows = [new DrawArrow { From = "app", To = "missing" }] };
 
-        Assert.Throws<ArgumentException>(() => catalog.Draw("Broken", broken));
+        Assert.Throws<DrawingRefusal>(() => catalog.Draw("Broken", broken));
     }
 }

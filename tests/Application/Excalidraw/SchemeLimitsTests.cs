@@ -1,3 +1,4 @@
+using Snail.MCP.Obsidian.Application;
 using Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
 using Snail.MCP.Obsidian.Domain;
 
@@ -16,7 +17,7 @@ public class SchemeLimitsTests
     [Fact]
     public void Compose_OneNodeOverTheLimit_IsRefused()
     {
-        var refusal = Assert.Throws<ArgumentException>(() => new SceneComposer(new Random(1)).Compose(Chain(SchemeLimits.MostNodes + 1)));
+        var refusal = Assert.Throws<DrawingRefusal>(() => new SceneComposer(new Random(1)).Compose(Chain(SchemeLimits.MostNodes + 1)));
 
         Assert.Contains($"{SchemeLimits.MostNodes}", refusal.Message, StringComparison.Ordinal);
     }
@@ -28,7 +29,7 @@ public class SchemeLimitsTests
             .Select(index => new DrawBox { Key = $"b{index}", Text = "B", X = index * 300, Y = 0 })
             .ToList();
 
-        Assert.Throws<ArgumentException>(() => new SceneDrafter(new Random(1)).Draft(new DrawSpec { Boxes = boxes }));
+        Assert.Throws<DrawingRefusal>(() => new SceneDrafter(new Random(1)).Draft(new DrawSpec { Boxes = boxes }));
     }
 
     /// <summary>Excalidraw stacks elements by their fractional index, so past "b" the indices must still sort in drawing order.</summary>
@@ -57,7 +58,7 @@ public class SchemeLimitsTests
         var longEdges = Enumerable.Range(0, 60).Select(index => new EdgeSpec { From = $"n{index}", To = $"n{SchemeLimits.MostNodes - 1 - index}" });
         var spec = new SchemeSpec { Nodes = chain.Nodes, Edges = [.. chain.Edges, .. longEdges] };
 
-        var refusal = Assert.Throws<ArgumentException>(() => new SceneComposer(new Random(1)).Compose(spec));
+        var refusal = Assert.Throws<DrawingRefusal>(() => new SceneComposer(new Random(1)).Compose(spec));
 
         Assert.Contains("groups", refusal.Message, StringComparison.Ordinal);
     }

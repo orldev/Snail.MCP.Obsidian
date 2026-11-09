@@ -100,16 +100,16 @@ public sealed class SceneDrafter(Random? random = null)
     private static void Validate(DrawSpec spec)
     {
         if (spec.Boxes.Count == 0)
-            throw new ArgumentException("A drawing needs at least one box.");
+            throw new DrawingRefusal("A drawing needs at least one box.");
 
         if (spec.Boxes.Count > SchemeLimits.MostNodes || spec.Arrows.Count > SchemeLimits.MostEdges)
-            throw new ArgumentException($"A drawing takes at most {SchemeLimits.MostNodes} boxes and {SchemeLimits.MostEdges} arrows; split it into several drawings.");
+            throw new DrawingRefusal($"A drawing takes at most {SchemeLimits.MostNodes} boxes and {SchemeLimits.MostEdges} arrows; split it into several drawings.");
 
         HashSet<string> keys = [];
         foreach (var box in spec.Boxes)
         {
             if (!keys.Add(box.Key))
-                throw new ArgumentException($"Box key '{box.Key}' is used twice.");
+                throw new DrawingRefusal($"Box key '{box.Key}' is used twice.");
 
             StyleRules.ValidateNode(box);
         }
@@ -133,10 +133,10 @@ public sealed class SceneDrafter(Random? random = null)
         foreach (var arrow in spec.Arrows)
         {
             if (!keys.Contains(arrow.From))
-                throw new ArgumentException($"Arrow refers to unknown box key '{arrow.From}'.");
+                throw new DrawingRefusal($"Arrow refers to unknown box key '{arrow.From}'.");
 
             if (!keys.Contains(arrow.To))
-                throw new ArgumentException($"Arrow refers to unknown box key '{arrow.To}'.");
+                throw new DrawingRefusal($"Arrow refers to unknown box key '{arrow.To}'.");
 
             StyleRules.ExpectSide(arrow.FromSide, "fromSide");
             StyleRules.ExpectSide(arrow.ToSide, "toSide");
@@ -145,7 +145,7 @@ public sealed class SceneDrafter(Random? random = null)
             foreach (var bend in arrow.Bends)
             {
                 if (bend.Count != 2)
-                    throw new ArgumentException($"A bend of the arrow '{arrow.From}' → '{arrow.To}' must be a pair [x, y].");
+                    throw new DrawingRefusal($"A bend of the arrow '{arrow.From}' → '{arrow.To}' must be a pair [x, y].");
             }
         }
     }

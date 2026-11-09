@@ -50,11 +50,19 @@ public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
     }
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// A folder is refused as no scheme before it is opened: the system refuses to read one with
+    /// UnauthorizedAccessException, the server's failure for a file it may not open.
+    /// </remarks>
     public string Read(string relativePath)
     {
+        var fullPath = Resolve(relativePath);
+        if (Directory.Exists(fullPath))
+            throw new VaultRefusal($"'{relativePath}' names a folder, not a scheme; scheme_list names every scheme.");
+
         try
         {
-            return File.ReadAllText(Resolve(relativePath));
+            return File.ReadAllText(fullPath);
         }
         catch (Exception missing) when (missing is FileNotFoundException or DirectoryNotFoundException)
         {
@@ -146,7 +154,7 @@ public sealed class FileSystemVaultStore(VaultConfig config) : IVaultStore
         var root = Root;
         var fullPath = Path.GetFullPath(Path.Combine(root, relativePath));
         if (!fullPath.StartsWith(root, StringComparison.Ordinal) || !LeadsInside(fullPath))
-            throw new UnauthorizedAccessException($"The path '{relativePath}' escapes the vault root.");
+            throw new VaultEscape($"The path '{relativePath}' escapes the vault root.");
 
         return fullPath;
     }

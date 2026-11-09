@@ -48,7 +48,21 @@ public class FileSystemVaultStoreTests : IDisposable
     [Fact]
     public void Read_PathEscapingTheVault_IsRefused()
     {
-        Assert.Throws<UnauthorizedAccessException>(() => Store().Read("../outside.md"));
+        Assert.Throws<VaultEscape>(() => Store().Read("../outside.md"));
+    }
+
+    /// <summary>
+    /// A folder named as a scheme is the caller's mistake: the system's UnauthorizedAccessException, which the refusal of
+    /// a path outside the vault was once named by, said "stay inside the vault" to a path that was inside.
+    /// </summary>
+    [Fact]
+    public void Read_AFolder_IsRefusedAsNoScheme()
+    {
+        WriteFile("Excalidraw/Note.md", "note");
+
+        var refusal = Assert.Throws<VaultRefusal>(() => Store().Read("Excalidraw"));
+
+        Assert.Contains("folder", refusal.Message, StringComparison.Ordinal);
     }
 
     [Fact]

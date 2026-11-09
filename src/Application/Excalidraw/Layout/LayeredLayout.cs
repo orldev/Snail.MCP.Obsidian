@@ -53,7 +53,7 @@ internal static class LayeredLayout
     {
         var skipped = spec.Edges.Sum(edge => (long)Math.Max(0, ranks[edge.To] - ranks[edge.From] - 1));
         if (skipped > SchemeLimits.MostSkippedColumns)
-            throw new ArgumentException($"Without groups the edges of this scheme skip {skipped} columns in all, more than {SchemeLimits.MostSkippedColumns}; give the nodes groups, or split the scheme.");
+            throw new DrawingRefusal($"Without groups the edges of this scheme skip {skipped} columns in all, more than {SchemeLimits.MostSkippedColumns}; give the nodes groups, or split the scheme.");
     }
 
     /// <summary>Slot ids per rank, crossing-minimized: real nodes mixed with waypoint slots of edges passing through the rank.</summary>

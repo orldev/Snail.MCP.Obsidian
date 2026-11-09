@@ -32,13 +32,26 @@ public sealed class SchemeCatalog(IVaultStore vault, SceneComposer composer, Sce
         [.. vault.MarkdownFiles().Where(path => vault.ReadHead(path)?.Contains(PluginMarker, StringComparison.Ordinal) == true)];
 
     /// <summary>A scheme as its logical graph.</summary>
+    /// <remarks>Broken JSON in the drawing block threw JsonException, which no refusal names, and a damaged file was answered as the server's failure.</remarks>
     public SchemeGraph Read(string relativePath)
     {
         var document = ExcalidrawCodec.Parse(vault.Read(relativePath));
-        var scene = JsonNode.Parse(ExcalidrawCodec.DecodeDrawing(document))
-            ?? throw new FormatException("The drawing payload is empty.");
+        var scene = Scene(ExcalidrawCodec.DecodeDrawing(document))
+            ?? throw new CorruptedDrawing("The drawing payload is empty.");
 
         return GraphProjection.Project(scene);
+    }
+
+    private static JsonNode? Scene(string drawing)
+    {
+        try
+        {
+            return JsonNode.Parse(drawing);
+        }
+        catch (JsonException broken)
+        {
+            throw new CorruptedDrawing($"The drawing block is not valid JSON: {broken.Message}", broken);
+        }
     }
 
     /// <summary>Lays out and writes a scheme; returns its path, with <c>.md</c> added when missing.</summary>

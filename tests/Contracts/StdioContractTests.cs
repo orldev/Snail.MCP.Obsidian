@@ -107,6 +107,23 @@ public sealed class StdioContractTests : IDisposable
         Assert.Contains("escapes the vault root", answer.Error(), StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// A drawing block whose JSON is broken is a file to repair, not the server's failure: answered "failed inside, try
+    /// once more", the model read the same file again.
+    /// </summary>
+    [Fact]
+    public async Task CallTool_ReadingABrokenJsonBlock_IsCorrupted()
+    {
+        await File.WriteAllTextAsync(Path.Combine(_vault, "Broken.md"), "---\nexcalidraw-plugin: parsed\n---\n## Drawing\n```json\n{\"type\":\"excalidraw\",\"elements\":[\n```\n%%\n");
+        await using var client = await StartedAsync();
+
+        var answer = await client.CallToolAsync("scheme_read", new Dictionary<string, object?> { ["path"] = "Broken.md" });
+
+        Assert.True(answer.IsError);
+        Assert.Equal("corrupted", answer.Type());
+        Assert.NotNull(answer.Hint());
+    }
+
     /// <summary>A vault named only by the settings file, the file named by <c>SNAIL_MCP_OBSIDIAN_CONFIG</c>, is the server's.</summary>
     [Fact]
     public async Task Vault_FromTheSettingsFile_IsServed()

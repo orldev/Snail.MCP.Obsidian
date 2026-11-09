@@ -1,4 +1,5 @@
 using Snail.MCP.Obsidian.Adapters.FileSystem;
+using Snail.MCP.Obsidian.Application;
 using Snail.MCP.Obsidian.Configuration;
 
 namespace Snail.MCP.Obsidian.Tests.Chaos;
@@ -29,7 +30,7 @@ public sealed class VaultLinkChaosTests : IDisposable
 
         var refusal = Record.Exception(() => Store().TryWrite("Linked/Stolen.md", "outside", overwrite: false));
 
-        Assert.IsType<UnauthorizedAccessException>(refusal);
+        Assert.IsType<VaultEscape>(refusal);
         Assert.False(File.Exists(Path.Combine(_outside, "Stolen.md")), "the file was written outside the vault");
     }
 
@@ -47,7 +48,7 @@ public sealed class VaultLinkChaosTests : IDisposable
 
         var refusal = Record.Exception(() => Store().TryWrite("Ghost.md", "outside", overwrite));
 
-        Assert.IsType<UnauthorizedAccessException>(refusal);
+        Assert.IsType<VaultEscape>(refusal);
         Assert.False(File.Exists(target), "the file was written outside the vault");
     }
 
@@ -60,7 +61,7 @@ public sealed class VaultLinkChaosTests : IDisposable
 
         var refusal = Record.Exception(() => Store().TryWrite("Gone/Stolen.md", "outside", overwrite: false));
 
-        Assert.IsType<UnauthorizedAccessException>(refusal);
+        Assert.IsType<VaultEscape>(refusal);
         Assert.False(Directory.Exists(target), "a folder was created outside the vault");
     }
 
@@ -72,7 +73,7 @@ public sealed class VaultLinkChaosTests : IDisposable
 
         var refusal = Record.Exception(() => Store().Read("Secret.md"));
 
-        Assert.IsType<UnauthorizedAccessException>(refusal);
+        Assert.IsType<VaultEscape>(refusal);
     }
 
     /// <summary>Breaks the listing: notes behind a directory link leading out are offered as notes of the vault.</summary>

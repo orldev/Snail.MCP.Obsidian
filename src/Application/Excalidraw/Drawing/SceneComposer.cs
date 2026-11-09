@@ -71,16 +71,16 @@ public sealed class SceneComposer(Random? random = null)
     private static void Validate(SchemeSpec spec)
     {
         if (spec.Nodes.Count == 0)
-            throw new ArgumentException("A scheme needs at least one node.");
+            throw new DrawingRefusal("A scheme needs at least one node.");
 
         if (spec.Nodes.Count > SchemeLimits.MostNodes || spec.Edges.Count > SchemeLimits.MostEdges)
-            throw new ArgumentException($"A scheme takes at most {SchemeLimits.MostNodes} nodes and {SchemeLimits.MostEdges} edges; split it into several schemes.");
+            throw new DrawingRefusal($"A scheme takes at most {SchemeLimits.MostNodes} nodes and {SchemeLimits.MostEdges} edges; split it into several schemes.");
 
         HashSet<string> keys = [];
         foreach (var node in spec.Nodes)
         {
             if (!keys.Add(node.Key))
-                throw new ArgumentException($"Node key '{node.Key}' is used twice.");
+                throw new DrawingRefusal($"Node key '{node.Key}' is used twice.");
 
             StyleRules.ValidateNode(node);
         }
@@ -88,10 +88,10 @@ public sealed class SceneComposer(Random? random = null)
         foreach (var edge in spec.Edges)
         {
             if (!keys.Contains(edge.From))
-                throw new ArgumentException($"Edge refers to unknown node key '{edge.From}'.");
+                throw new DrawingRefusal($"Edge refers to unknown node key '{edge.From}'.");
 
             if (!keys.Contains(edge.To))
-                throw new ArgumentException($"Edge refers to unknown node key '{edge.To}'.");
+                throw new DrawingRefusal($"Edge refers to unknown node key '{edge.To}'.");
 
             StyleRules.ValidateEdge(edge);
         }

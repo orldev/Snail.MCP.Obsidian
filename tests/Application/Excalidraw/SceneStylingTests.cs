@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using Snail.MCP.Obsidian.Application;
 using Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
 using Snail.MCP.Obsidian.Domain;
 
@@ -102,7 +103,7 @@ public class SceneStylingTests
             StrokeColor = field == "strokeColor" ? value : null,
         };
 
-        Assert.Throws<ArgumentException>(() => Compose(new SchemeSpec { Nodes = [node] }));
+        Assert.Throws<DrawingRefusal>(() => Compose(new SchemeSpec { Nodes = [node] }));
     }
 
     private static JsonObject Compose(SchemeSpec spec) =>

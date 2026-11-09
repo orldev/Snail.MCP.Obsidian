@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using Snail.MCP.Obsidian.Application;
 using Snail.MCP.Obsidian.Application.Excalidraw.Format;
 using Snail.MCP.Obsidian.Application.Excalidraw.Reading;
 
@@ -19,7 +20,7 @@ public class SceneReadingChaosTests
 
         var failure = Record.Exception(() => LzString.DecompressFromBase64(damaged));
 
-        Assert.IsType<FormatException>(failure);
+        Assert.IsType<CorruptedDrawing>(failure);
     }
 
     /// <summary>

@@ -333,6 +333,6 @@ public class SchemeCreationTests
             Edges = [new EdgeSpec { From = "a", To = "missing" }],
         };
 
-        Assert.Throws<ArgumentException>(() => catalog.Create("Broken", broken));
+        Assert.Throws<DrawingRefusal>(() => catalog.Create("Broken", broken));
     }
 }

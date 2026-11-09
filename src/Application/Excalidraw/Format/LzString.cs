@@ -186,7 +186,7 @@ public static class LzString
             }
             else
             {
-                throw new FormatException("The LZ-String stream is corrupted.");
+                throw new CorruptedDrawing("The LZ-String stream is corrupted.");
             }
 
             dictionary.Add(new Phrase(previous.Offset, previous.Length + 1));
@@ -206,7 +206,7 @@ public static class LzString
     private static int Base64Value(char character) =>
         character < Base64Values.Length && Base64Values[character] >= 0
             ? Base64Values[character]
-            : throw new FormatException($"The compressed drawing holds '{character}', which is not a Base64 character; the file is corrupted.");
+            : throw new CorruptedDrawing($"The compressed drawing holds '{character}', which is not a Base64 character; the file is corrupted.");
 
     private static int[] BuildReverseAlphabet()
     {

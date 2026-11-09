@@ -1,4 +1,5 @@
 using Snail.MCP.Obsidian.Adapters.FileSystem;
+using Snail.MCP.Obsidian.Application;
 using Snail.MCP.Obsidian.Application.Excalidraw.Drawing;
 using Snail.MCP.Obsidian.Application.Ports;
 using Snail.MCP.Obsidian.Application.Schemes;
@@ -83,7 +84,7 @@ public sealed class SchemeCatalogChaosTests : IDisposable
         ComposedScene? composed = null;
 
         var refusal = Record.Exception(() => composed = new SceneComposer(new Random(1)).Compose(spec));
-        if (refusal is ArgumentException)
+        if (refusal is DrawingRefusal)
             return;
 
         var widths = composed!.Scene["elements"]!.AsArray().Select(element => element!["width"]!.GetValue<double>());

@@ -26,7 +26,7 @@ public sealed class VaultPathChaosTests : IDisposable
 
         var refusal = Record.Exception(() => store.TryWrite("../Vault Backup/Stolen.md", "outside", overwrite: false));
 
-        Assert.IsType<UnauthorizedAccessException>(refusal);
+        Assert.IsType<VaultEscape>(refusal);
         Assert.False(File.Exists(Path.Combine(sibling, "Stolen.md")), "the file was written outside the vault");
     }
 

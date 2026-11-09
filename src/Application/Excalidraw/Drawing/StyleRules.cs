@@ -22,7 +22,7 @@ internal static partial class StyleRules
     public static void ExpectFontSize(int? value, string field)
     {
         if (value is { } size && size is < SchemeLimits.SmallestFontSize or > SchemeLimits.LargestFontSize)
-            throw new ArgumentException($"The {field} {size} is outside {SchemeLimits.SmallestFontSize} to {SchemeLimits.LargestFontSize} px.");
+            throw new DrawingRefusal($"The {field} {size} is outside {SchemeLimits.SmallestFontSize} to {SchemeLimits.LargestFontSize} px.");
     }
 
     public static void ValidateEdge(IEdgeStyle style)
@@ -37,7 +37,7 @@ internal static partial class StyleRules
     public static void ExpectColor(string? value, string field)
     {
         if (value is not null && value != "transparent" && !ColorPattern().IsMatch(value))
-            throw new ArgumentException($"The {field} '{value}' is not a hex color like #1971c2 or 'transparent'.");
+            throw new DrawingRefusal($"The {field} '{value}' is not a hex color like #1971c2 or 'transparent'.");
     }
 
     public static void ExpectStrokeStyle(string? value) => Expect(StyleVocabulary.StrokeStyles, value, "strokeStyle");
@@ -65,13 +65,13 @@ internal static partial class StyleRules
     private static void Expect(IReadOnlyList<string> allowed, string? value, string field)
     {
         if (value is not null && !allowed.Contains(value))
-            throw new ArgumentException($"Unknown {field} '{value}'; allowed: {string.Join(", ", allowed)}.");
+            throw new DrawingRefusal($"Unknown {field} '{value}'; allowed: {string.Join(", ", allowed)}.");
     }
 
     private static void ExpectWidth(int? value)
     {
         if (value is { } width && !StyleVocabulary.StrokeWidths.Contains(width))
-            throw new ArgumentException($"Unknown strokeWidth '{value}'; allowed: {string.Join(", ", StyleVocabulary.StrokeWidths)}.");
+            throw new DrawingRefusal($"Unknown strokeWidth '{value}'; allowed: {string.Join(", ", StyleVocabulary.StrokeWidths)}.");
     }
 
     [GeneratedRegex("^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$")]

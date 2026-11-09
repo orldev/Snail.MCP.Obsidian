@@ -82,7 +82,7 @@ public static class ExcalidrawCodec
         if (candidates.Count > 0)
             return (candidates[0].BodyStart, candidates[0].Format);
 
-        throw new FormatException("The file has no json or compressed-json drawing block; it is not an Excalidraw markdown file.");
+        throw new CorruptedDrawing("The file has no json or compressed-json drawing block; it is not an Excalidraw markdown file.");
     }
 
     private static int FindClosingFence(string markdown, int bodyStart)
@@ -94,7 +94,7 @@ public static class ExcalidrawCodec
                 return lineStart;
         }
 
-        throw new FormatException("The drawing block is never closed; the file is truncated or corrupted.");
+        throw new CorruptedDrawing("The drawing block is never closed; the file is truncated or corrupted.");
     }
 
     private static IEnumerable<(int Start, int End)> Lines(string text, int from = 0)
