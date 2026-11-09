@@ -6,13 +6,10 @@ namespace Snail.MCP.Obsidian.Tests.Application.Excalidraw;
 
 public class RealVaultProjectionTests
 {
-    [Theory]
+    [RealVaultTheory]
     [MemberData(nameof(RealVaultParityTests.SchemeFiles), MemberType = typeof(RealVaultParityTests))]
     public void Project_RealSchemeFile_GivesANonEmptyGraph(string file)
     {
-        if (file.Length == 0)
-            return;
-
         var document = ExcalidrawCodec.Parse(File.ReadAllText(file));
         var scene = JsonNode.Parse(ExcalidrawCodec.DecodeDrawing(document))!;
 
@@ -21,13 +18,10 @@ public class RealVaultProjectionTests
         Assert.True(graph.Nodes.Count + graph.Labels.Count > 0);
     }
 
-    [Theory]
+    [RealVaultTheory]
     [MemberData(nameof(RealVaultParityTests.SchemeFiles), MemberType = typeof(RealVaultParityTests))]
     public void Project_RealSchemeFile_BindsEdgesToRealElements(string file)
     {
-        if (file.Length == 0)
-            return;
-
         var document = ExcalidrawCodec.Parse(File.ReadAllText(file));
         var scene = JsonNode.Parse(ExcalidrawCodec.DecodeDrawing(document))!;
 

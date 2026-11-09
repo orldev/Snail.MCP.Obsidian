@@ -109,3 +109,6 @@ blocks and 17 arrows 1.55 MB, `scheme_read` 1.00 MB. The slowest layout within t
   }
 }
 ```
+
+`dotnet test` reads no vault but the temporary ones it makes. The parity tests against drawings the Excalidraw plugin
+wrote run only when `SNAIL_OBSIDIAN_REAL_VAULT` names a vault to read them from, and are skipped, saying so, otherwise.
