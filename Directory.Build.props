@@ -3,8 +3,8 @@
   <!-- The rest of the build — language, nullable, docs, analyzers, warnings as errors — is Snail.Sdk's (global.json). -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <RepositoryUrl>https://github.com/orldev/Snail.MCP.Vault</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/orldev/Snail.MCP.Vault</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/orldev/Snail.MCP.Obsidian</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/orldev/Snail.MCP.Obsidian</PackageProjectUrl>
   </PropertyGroup>
 
 </Project>
